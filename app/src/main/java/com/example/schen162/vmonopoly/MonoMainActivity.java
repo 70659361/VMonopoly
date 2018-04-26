@@ -3,6 +3,10 @@ package com.example.schen162.vmonopoly;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.MapView;
+
+
 public class MonoMainActivity extends AppCompatActivity {
 
     @Override
