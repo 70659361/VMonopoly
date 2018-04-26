@@ -9,9 +9,20 @@ import com.amap.api.maps.MapView;
 
 public class MonoMainActivity extends AppCompatActivity {
 
+    MapView mMapView = null;
+    AMap aMap = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mono_main);
+
+        mMapView = (MapView) findViewById(R.id.map);
+        mMapView.onCreate(savedInstanceState);
+
+
+        if (aMap == null) {
+            aMap = mMapView.getMap();
+        }
     }
 }
