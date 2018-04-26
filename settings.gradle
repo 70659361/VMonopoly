@@ -1,1 +1,1 @@
-include ':app'
+include ':app', ':Amap_2DMap_V5.2.0_20170627', ':AMap_Search_V6.1.0_20180330'
