@@ -1,6 +1,7 @@
 package com.example.schen162.vmonopoly;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,7 +10,9 @@ import android.widget.Button;
 import android.widget.RadioGroup;
 
 import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.model.MyLocationStyle;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
@@ -24,6 +27,7 @@ public class MonoMainActivity extends AppCompatActivity implements OnPoiSearchLi
     private PoiSearch poiSearch;// POI搜索
     private PoiSearch.Query query;// Poi查询条件类
     AutoCompleteTextView searchText;
+    MyLocationStyle myLocationStyle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +43,20 @@ public class MonoMainActivity extends AppCompatActivity implements OnPoiSearchLi
     protected void init() {
         if (aMap == null) {
             aMap = mapView.getMap();
+
         }
 
         searchText= (AutoCompleteTextView) findViewById(R.id.txt_keyword);
         searchText.setHint("输入关键字");
+
+        myLocationStyle = new MyLocationStyle();
+        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);
+        myLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));// 设置圆形的边框颜色
+        myLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));
+        aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+        aMap.setMyLocationStyle(myLocationStyle);
+        aMap.getUiSettings().setMyLocationButtonEnabled(true);
+        aMap.setMyLocationEnabled(true);
     }
 
     @Override
