@@ -1,5 +1,6 @@
 package com.example.schen162.vmonopoly;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -41,6 +42,7 @@ public class MonoMainActivity extends AppCompatActivity implements OnPoiSearchLi
         }
 
         searchText= (AutoCompleteTextView) findViewById(R.id.txt_keyword);
+        searchText.setHint("输入关键字");
     }
 
     @Override
@@ -76,12 +78,14 @@ public class MonoMainActivity extends AppCompatActivity implements OnPoiSearchLi
 
     @Override
     public void onPoiSearched(PoiResult result, int rCode) {
-        ArrayList<PoiItem> pois = result.getPois();
+        Intent intent = new Intent(this,POIListActivity.class);
+        POIListActivity.pois = result.getPois();
+        startActivity(intent);
     }
 
     public boolean onSearchPressed(View view) {
         query = new PoiSearch.Query(searchText.getText().toString(), "", "上海");
-        query.setPageSize(8);// 设置每页最多返回多少条poiitem
+        query.setPageSize(10);// 设置每页最多返回多少条poiitem
         query.setPageNum(1);// 设置查第一页
         query.setCityLimit(true);
 

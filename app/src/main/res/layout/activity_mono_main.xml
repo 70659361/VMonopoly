@@ -16,24 +16,22 @@
         tools:layout_editor_absoluteY="8dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
+            android:layout_width="374dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="8dp">
 
             <AutoCompleteTextView
                 android:id="@+id/txt_keyword"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="信息" />
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
 
             <Button
                 android:id="@+id/btn_search"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:onClick="onSearchPressed"
                 android:text="Search" />
@@ -49,7 +47,6 @@
             tools:layout_editor_absoluteY="8dp">
 
         </com.amap.api.maps2d.MapView>
-
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -6,4 +6,13 @@
     android:layout_height="match_parent"
     tools:context="com.example.schen162.vmonopoly.POIListActivity">
 
+    <ListView
+        android:id="@+id/list_pois"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
+
+    </ListView>
+
 </android.support.constraint.ConstraintLayout>
