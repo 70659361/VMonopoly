@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.Timer;
@@ -16,9 +17,11 @@ import java.util.TimerTask;
 public class DrivingActivity extends AppCompatActivity {
 
     private TextView txMileage;
+    private EditText txUsername;
     private int mileage;
     private boolean isDrive;
     private Button btnDrive;
+    private Button btnLogin;
     private Timer timer;
 
     @Override
@@ -27,7 +30,11 @@ public class DrivingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_driving);
 
         txMileage = (TextView) findViewById(R.id.txt_m);
+        txUsername = (EditText) findViewById(R.id.txt_username);
         btnDrive = (Button) findViewById(R.id.btn_drive);
+        btnLogin = (Button) findViewById(R.id.btn_login);
+
+        btnLogin.setHint("输入用户名");
         btnDrive.setText("开车挖矿");
         isDrive = false;
     }
@@ -53,6 +60,12 @@ public class DrivingActivity extends AppCompatActivity {
     public boolean onMapPressed(View view) {
         Intent intent = new Intent(this, MonoMainActivity.class);
         startActivity(intent);
+        return true;
+    }
+
+    public boolean onLoginPressed(View view){
+
+
         return true;
     }
 
