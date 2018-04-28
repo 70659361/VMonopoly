@@ -29,16 +29,20 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="2a592a23ffde8d1b659982dde22f3644" />
-        <activity android:name=".DrivingActivity">
+        <activity
+            android:name=".LanuchActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_lanuch"
+            android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MonoMainActivity">
-        </activity>
-        <activity android:name=".POIListActivity" />
 
+        <activity android:name=".DrivingActivity"></activity>
+        <activity android:name=".MonoMainActivity"></activity>
+        <activity android:name=".POIListActivity"></activity>
     </application>
 
 </manifest>

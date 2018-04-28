@@ -28,18 +28,20 @@ public class DrivingActivity extends AppCompatActivity {
 
         txMileage = (TextView) findViewById(R.id.txt_m);
         btnDrive = (Button) findViewById(R.id.btn_drive);
+        btnDrive.setText("开车挖矿");
         isDrive = false;
     }
 
     public boolean onDrivePressed(View view) {
         if (isDrive) {
             timer.cancel();
-            btnDrive.setBackgroundColor(Color.GREEN);
-            btnDrive.setText("Drive");
+            txMileage.setBackgroundColor(Color.RED);
+            //btnDrive.setBackgroundColor(Color.RED);
+            btnDrive.setText("开车挖矿");
             isDrive = false;
         } else {
-            btnDrive.setBackgroundColor(Color.RED);
-            btnDrive.setText("Stop");
+            txMileage.setBackgroundColor(Color.GREEN);
+            btnDrive.setText("停止驾驶");
             timer=new Timer();
             TimerTask task = new MyTimerTask();
             timer.schedule(task, 1000, 1000);
