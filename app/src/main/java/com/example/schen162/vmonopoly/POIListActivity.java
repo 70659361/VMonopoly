@@ -37,6 +37,8 @@ public class POIListActivity extends AppCompatActivity {
                     POIListActivity.this, android.R.layout.simple_list_item_1, data);
             ListView listView = (ListView) findViewById(R.id.list_pois);
             listView.setAdapter(adapter);
+        }else {
+            
         }
     }
 }

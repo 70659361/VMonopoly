@@ -6,19 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.RadioGroup;
 
-import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
-import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.MyLocationStyle;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.amap.api.services.poisearch.PoiSearch.OnPoiSearchListener;
-
-import java.util.ArrayList;
 
 public class MapActivity extends AppCompatActivity implements OnPoiSearchListener {
 
@@ -32,7 +26,7 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mono_main);
+        setContentView(R.layout.activity_map);
 
         mapView = (com.amap.api.maps2d.MapView) findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);// 此方法必须重写

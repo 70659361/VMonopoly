@@ -42,13 +42,16 @@ public class DrivingActivity extends AppCompatActivity {
         isDrive = false;
     }
 
+    @Override
+    protected void onStart(){
+        super.onStart();
+    }
+
     public boolean onDrivePressed(View view) {
         if (isDrive) {
             timer.cancel();
             txMileage.setBackgroundColor(Color.RED);
-            //btnDrive.setBackgroundColor(Color.RED);
             btnDrive.setText("开车挖矿");
-            isDrive = false;
             UserManage.getInstance().updateCoins(mileage);
         } else {
             txMileage.setBackgroundColor(Color.GREEN);
@@ -56,8 +59,8 @@ public class DrivingActivity extends AppCompatActivity {
             timer=new Timer();
             TimerTask task = new MyTimerTask();
             timer.schedule(task, 10000, 10000);
-            isDrive = true;
         }
+        isDrive=!isDrive;
         return true;
     }
 
