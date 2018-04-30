@@ -1,5 +1,6 @@
 package com.example.schen162.vmonopoly;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
@@ -18,6 +19,7 @@ public class DrivingActivity extends AppCompatActivity {
 
     private TextView txMileage;
     private EditText txUsername;
+    private TextView txHttp;
     private int mileage;
     private boolean isDrive;
     private Button btnDrive;
@@ -30,6 +32,7 @@ public class DrivingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_driving);
 
         txMileage = (TextView) findViewById(R.id.txt_m);
+        txHttp = (TextView) findViewById(R.id.txt_http);
         txUsername = (EditText) findViewById(R.id.txt_username);
         btnDrive = (Button) findViewById(R.id.btn_drive);
         btnLogin = (Button) findViewById(R.id.btn_login);
@@ -64,8 +67,16 @@ public class DrivingActivity extends AppCompatActivity {
     }
 
     public boolean onLoginPressed(View view){
+        String us=txUsername.getText().toString();
+        AlertDialog.Builder alertDialogBuilder=new AlertDialog.Builder(this);
+        AlertDialog alertDialog = alertDialogBuilder.create();
 
-
+        if(UserManage.getInstance ().login(us)){
+            alertDialog.setMessage("登陆成功, 请开始挖矿！");
+        }else {
+            alertDialog.setMessage("此用户不存在");
+        }
+        alertDialog.show();
         return true;
     }
 
