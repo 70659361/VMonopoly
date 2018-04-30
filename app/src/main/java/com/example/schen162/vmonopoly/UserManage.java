@@ -41,7 +41,7 @@ public class UserManage {
 
     public boolean login(final String username){
         UserName="";
-        httpAPICall("/login/" + username);
+        httpAPICall("/login/"+username, "GET");
         try {
             if(null != jsResponse){
                 UserName=username;
@@ -57,13 +57,20 @@ public class UserManage {
 
     public int getUserCoins(){
         try {
-            httpAPICall("/coins/" + UserName);
+            httpAPICall("/coins/"+UserName, "GET");
             if (null != jsResponse) {
                 UserConins = jsResponse.getInt("coins");
             }
         }catch(Exception e){}
 
         return UserConins;
+    }
+
+    public void updateCoins(int coins){
+        try {
+            httpAPICall("/coins/"+UserName+"/"+Integer.toString(coins), "POST");
+            UserConins = coins;
+        }catch(Exception e){}
     }
 
     private Handler handler = new Handler() {
@@ -80,40 +87,50 @@ public class UserManage {
         }
     };
 
-    private void httpAPICall(String url){
+    private void httpAPICall(String url, String method){
 
-        Thread loginThread = new Thread(new Runnable() {
-            private String APIUrl;
-            @Override
-            public void run() {
-                HttpURLConnection connection=null;
-                ByteArrayOutputStream infoStream = new ByteArrayOutputStream();
-                try {
-                    URL url = new URL("http://7a4b5b14.ngrok.io"+APIUrl);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.setConnectTimeout(2000);
-                    connection.setRequestMethod("GET");
-                    InputStream in = connection.getInputStream();
-                    byte[] data = new byte[1000];
-                    int readSize = 0;
+        Thread _httpThread = new httpThread(url, method);
+        _httpThread.start();
+        try{
+            _httpThread.join();
+        }catch (Exception e){};
+    }
 
-                    while( ( readSize = in.read(data)) != -1 ){
-                        infoStream.write(data,0,readSize);
-                    }
-                    jsResponse = new JSONObject(infoStream.toString());
-                }catch (Exception e){
-                    Log.d("", e.toString());
-                    jsResponse = null;
+    class httpThread extends Thread{
+        private String _url;
+        private String _method;
+
+        public httpThread(String url, String method){
+            _url=url;
+            _method=method;
+        }
+
+        public httpThread(String url){
+            _url=url;
+            _method="GET";
+        }
+
+        public void run(){
+            HttpURLConnection connection=null;
+            ByteArrayOutputStream infoStream = new ByteArrayOutputStream();
+            try {
+                URL url = new URL("http://7a4b5b14.ngrok.io"+_url);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setConnectTimeout(2000);
+                connection.setRequestMethod(_method);
+                InputStream in = connection.getInputStream();
+                byte[] data = new byte[1000];
+                int readSize = 0;
+
+                while( ( readSize = in.read(data)) != -1 ){
+                    infoStream.write(data,0,readSize);
                 }
+                jsResponse = new JSONObject(infoStream.toString());
+            }catch (Exception e) {
+                Log.d("", e.toString());
+                jsResponse = null;
             }
-            public Runnable setURL(String url){
-                APIUrl=url;
-                return this;
-            }
-        }.setURL(url));
-
-        loginThread.start();
-        try{loginThread.join();}catch (Exception e){};
+        }
     }
 
     public void setUser(String user){

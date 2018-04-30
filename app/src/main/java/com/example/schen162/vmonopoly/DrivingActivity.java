@@ -49,6 +49,7 @@ public class DrivingActivity extends AppCompatActivity {
             //btnDrive.setBackgroundColor(Color.RED);
             btnDrive.setText("开车挖矿");
             isDrive = false;
+            UserManage.getInstance().updateCoins(mileage);
         } else {
             txMileage.setBackgroundColor(Color.GREEN);
             btnDrive.setText("停止驾驶");
@@ -61,7 +62,13 @@ public class DrivingActivity extends AppCompatActivity {
     }
 
     public boolean onMapPressed(View view) {
-        Intent intent = new Intent(this, MonoMainActivity.class);
+        Intent intent = new Intent(this, MapActivity.class);
+        startActivity(intent);
+        return true;
+    }
+
+    public boolean onPOIPressed(View view) {
+        Intent intent = new Intent(this, POIListActivity.class);
         startActivity(intent);
         return true;
     }

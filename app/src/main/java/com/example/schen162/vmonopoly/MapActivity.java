@@ -20,7 +20,7 @@ import com.amap.api.services.poisearch.PoiSearch.OnPoiSearchListener;
 
 import java.util.ArrayList;
 
-public class MonoMainActivity extends AppCompatActivity implements OnPoiSearchListener {
+public class MapActivity extends AppCompatActivity implements OnPoiSearchListener {
 
     private com.amap.api.maps2d.MapView mapView;
     private com.amap.api.maps2d.AMap aMap;

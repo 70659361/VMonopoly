@@ -41,7 +41,7 @@
         </activity>
 
         <activity android:name=".DrivingActivity"></activity>
-        <activity android:name=".MonoMainActivity"></activity>
+        <activity android:name=".MapActivity"></activity>
         <activity android:name=".POIListActivity"></activity>
     </application>
 

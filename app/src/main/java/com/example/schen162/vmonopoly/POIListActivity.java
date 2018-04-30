@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class POIListActivity extends AppCompatActivity {
 
-    protected static ArrayList<PoiItem> pois;
+    protected static ArrayList<PoiItem> pois = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,19 +24,19 @@ public class POIListActivity extends AppCompatActivity {
     }
 
     private void init(){
-        Intent intent = getIntent();
+        if(null != pois) {
+            int n = pois.size();
+            String[] data = new String[n];
 
-        int n = pois.size();
-        String[] data = new String[n];
-
-        if(null != pois){
-            for(int i=0; i<n; i++) {
-                 data[i] = Integer.toString(i+1) + ".  " + pois.get(i).getTitle();
+            if (null != pois) {
+                for (int i = 0; i < n; i++) {
+                    data[i] = Integer.toString(i + 1) + ".  " + pois.get(i).getTitle();
+                }
             }
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                    POIListActivity.this, android.R.layout.simple_list_item_1, data);
+            ListView listView = (ListView) findViewById(R.id.list_pois);
+            listView.setAdapter(adapter);
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                POIListActivity.this, android.R.layout.simple_list_item_1, data);
-        ListView listView = (ListView) findViewById(R.id.list_pois);
-        listView.setAdapter(adapter);
     }
 }
