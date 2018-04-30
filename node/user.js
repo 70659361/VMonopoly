@@ -5,30 +5,49 @@ const connection = ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0; Data Source=mon
 
 
 app.get('/login/:username', function(req, res){
-	var loginUsr=req.params.username;
-	var isUser=false;
-	var result="";
-	var existusers;
 	
-	connection.query('SELECT * FROM userprofile where login="'+loginUsr+'"').then(users=>{
-		
+	
+	var loginUsr=req.params.username;
+	var result="";
+	
+	console.log('/login/'+loginUsr);
+	
+	var querySQL = 'SELECT userprofile.login, usercoins.coins FROM userprofile INNER JOIN usercoins ON userprofile.ID = usercoins.userid WHERE login="'+loginUsr+'"';
+	console.log(querySQL);
+	
+	connection.query(querySQL).then(users=>{
+		console.log(users);
 		if(users.length == 1){
-			console.log("Has this user");
-			result='{"user":"'+loginUsr+'","isUser":1}';
-			//result=JSON.stringify(result);
+			result=JSON.stringify(users[0]);
+			console.log(result);
 			res.send(result);
 		}else{
-			console.log(users);
-			console.log("No such user");
-			result='{"user":"'+loginUsr+'","isUser":0}';
-			//result=JSON.stringify(result);
-			res.send(result);
+			res.send("");
 		}
-		}).catch(err=>{console.log(err);});
-			
-	console.log("/login:  " + "hello  "+loginUsr);
+	}).catch(err=>{console.log(err);});
 });
 
+app.get('/coins/:username', function(req, res){
+	var loginUsr=req.params.username;
+	console.log('/coins/'+loginUsr);
+
+		
+	var querySQL = 'SELECT userprofile.login, usercoins.coins FROM userprofile INNER JOIN usercoins ON userprofile.ID = usercoins.userid WHERE login="'+loginUsr+'"';
+	console.log(querySQL);
+	
+	
+	connection.query(querySQL).then(users=>{
+		console.log(users);
+		if(users.length == 1){
+			result=JSON.stringify(users[0]);
+			console.log(result);
+			res.send(result);
+		}else{
+			res.send("");
+		}
+	}).catch(err=>{console.log(err);});
+});
+	
 var server = app.listen(8888, function () {
   var host = server.address().address;
   var port = server.address().port;

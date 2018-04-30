@@ -24,8 +24,9 @@ public class UserManage {
 
     private static UserManage _inst;
     private String UserName;
+    private int UserConins;
     private String HttpResponse;
-    ByteArrayOutputStream infoStream = new ByteArrayOutputStream();
+    private JSONObject jsResponse;
 
     protected UserManage (){
         UserName="";
@@ -39,46 +40,30 @@ public class UserManage {
     }
 
     public boolean login(final String username){
-        infoStream.reset();
         UserName="";
-
-        Thread loginThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpURLConnection connection=null;
-                try {
-                    URL url = new URL("http://78ab8146.ngrok.io/login/" + username);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.setConnectTimeout(2000);
-                    connection.setRequestMethod("GET");
-                    InputStream in = connection.getInputStream();
-                    byte[] data = new byte[1000];
-                    int readSize = 0;
-
-                    while( ( readSize = in.read(data)) != -1 ){
-                        infoStream.write(data,0,readSize);
-                    }
-                    HttpResponse = infoStream.toString();
-                    JSONObject usr = new JSONObject(HttpResponse);
-                    if(1 == usr.getInt("isUser")){
-                        UserName=username;
-                    }else{
-                        UserName="";
-                    }
-                }catch (Exception e){
-                    Log.d("", e.toString());
-                }
+        httpAPICall("/login/" + username);
+        try {
+            if(null != jsResponse){
+                UserName=username;
+                UserConins=jsResponse.getInt("coins");
+                return true;
+            }else{
+                return false;
             }
-        });
-
-        loginThread.start();
-        try{loginThread.join();}catch (Exception e){};
-
-        if(UserName == ""){
+        }catch (Exception e){
             return false;
-        }else{
-            return true;
         }
+    }
+
+    public int getUserCoins(){
+        try {
+            httpAPICall("/coins/" + UserName);
+            if (null != jsResponse) {
+                UserConins = jsResponse.getInt("coins");
+            }
+        }catch(Exception e){}
+
+        return UserConins;
     }
 
     private Handler handler = new Handler() {
@@ -95,11 +80,55 @@ public class UserManage {
         }
     };
 
+    private void httpAPICall(String url){
+
+        Thread loginThread = new Thread(new Runnable() {
+            private String APIUrl;
+            @Override
+            public void run() {
+                HttpURLConnection connection=null;
+                ByteArrayOutputStream infoStream = new ByteArrayOutputStream();
+                try {
+                    URL url = new URL("http://7a4b5b14.ngrok.io"+APIUrl);
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setConnectTimeout(2000);
+                    connection.setRequestMethod("GET");
+                    InputStream in = connection.getInputStream();
+                    byte[] data = new byte[1000];
+                    int readSize = 0;
+
+                    while( ( readSize = in.read(data)) != -1 ){
+                        infoStream.write(data,0,readSize);
+                    }
+                    jsResponse = new JSONObject(infoStream.toString());
+                }catch (Exception e){
+                    Log.d("", e.toString());
+                    jsResponse = null;
+                }
+            }
+            public Runnable setURL(String url){
+                APIUrl=url;
+                return this;
+            }
+        }.setURL(url));
+
+        loginThread.start();
+        try{loginThread.join();}catch (Exception e){};
+    }
+
     public void setUser(String user){
         UserName=user;
     }
     public String getUser(){
         return UserName;
     }
+
+    public void setCoins(int coins){
+        UserConins=coins;
+    }
+    public int getCoins(){
+        return UserConins;
+    }
+
 
 }

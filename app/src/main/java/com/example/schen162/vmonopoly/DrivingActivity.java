@@ -54,7 +54,7 @@ public class DrivingActivity extends AppCompatActivity {
             btnDrive.setText("停止驾驶");
             timer=new Timer();
             TimerTask task = new MyTimerTask();
-            timer.schedule(task, 1000, 1000);
+            timer.schedule(task, 10000, 10000);
             isDrive = true;
         }
         return true;
@@ -73,10 +73,15 @@ public class DrivingActivity extends AppCompatActivity {
 
         if(UserManage.getInstance ().login(us)){
             alertDialog.setMessage("登陆成功, 请开始挖矿！");
+            mileage=UserManage.getInstance().getCoins();
+            txMileage.setText(Integer.toString(mileage));
+            txMileage.setBackgroundColor(Color.RED);
         }else {
             alertDialog.setMessage("此用户不存在");
         }
         alertDialog.show();
+
+
         return true;
     }
 
