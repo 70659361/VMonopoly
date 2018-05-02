@@ -34,13 +34,14 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
     private PoiSearch poiSearch;// POI搜索
     private PoiSearch.Query query;// Poi查询条件类
     private TextView txCur;
+    private TextView txCurCoins;
     private MyLocationStyle myLocationStyle;
     private AMapLocationClient mlocationClient;
     private AMapLocationClientOption mLocationOption;
     private AMapLocation mCurLocation;
     private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
     private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
-    private final int SEARCH_RADIUS = 10000;
+    private final int SEARCH_RADIUS = 300;
     private Circle circle;
 
     @Override
@@ -50,6 +51,8 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
 
         mapView = (com.amap.api.maps2d.MapView) findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);// 此方法必须重写
+
+        txCurCoins = (TextView) findViewById(R.id.txt_CurCoins);
 
         init();
     }
@@ -82,6 +85,8 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
         mlocationClient.setLocationListener(this);
         mlocationClient.setLocationOption(mLocationOption);
         mlocationClient.startLocation();
+
+        txCurCoins.setText("当前福币：" + new Integer(UserManage.getInstance().getCoins()).toString());
     }
 
     @Override
@@ -143,6 +148,7 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
+        if(null != circle){ circle.remove();}
         mCurLocation=aMapLocation;
         String pi= mCurLocation.getPoiName();
         String ds= mCurLocation.getDescription();
@@ -153,5 +159,7 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
         circle = aMap.addCircle(new CircleOptions().center(latlong).radius(SEARCH_RADIUS).strokeColor(Color.GREEN)
                 .fillColor(Color.GREEN).strokeWidth(25));
         aMap.invalidate();
+
+        txCurCoins.setText("当前福币：" + new Integer(UserManage.getInstance().getCoins()).toString());
     }
 }
