@@ -3,42 +3,84 @@ package com.example.schen162.vmonopoly;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewDebug;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import com.amap.api.services.core.PoiItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class POIListActivity extends AppCompatActivity {
+public class POIListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     protected static ArrayList<PoiItem> pois = null;
+    private GridView grid_POIs;
+    private List<Map<String, Object>> data_list;
+    private SimpleAdapter sim_adapter;
+    private int[] icons;
+    private String[] prices;
+    private String[] iconName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_poilist);
+        grid_POIs = (GridView) findViewById(R.id.grid_pois);
+
 
         init();
     }
 
     private void init(){
-        if(null != pois) {
-            int n = pois.size();
-            String[] data = new String[n];
+        data_list = new ArrayList<Map<String, Object>>();
+        String [] from ={"title", "image","price"};
+        int [] to = {R.id.title, R.id.image, R.id.text};
+        sim_adapter = new SimpleAdapter(this, data_list, R.layout.grid_poiitem, from, to);
 
-            if (null != pois) {
-                for (int i = 0; i < n; i++) {
-                    data[i] = Integer.toString(i + 1) + ".  " + pois.get(i).getTitle();
-                }
+        if(null != pois) {
+            int sz = pois.size();
+            iconName = new String[sz];
+            icons = new int[sz];
+            prices = new String[sz];
+
+            for(int i=0; i<sz; i++){
+                iconName[i] = pois.get(i).getTitle();
+                icons[i] = R.drawable.onsale;
+                prices[i] = "100福币";
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                    POIListActivity.this, android.R.layout.simple_list_item_1, data);
-            ListView listView = (ListView) findViewById(R.id.list_pois);
-            listView.setAdapter(adapter);
-        }else {
-            
+            getData();
         }
+        grid_POIs.setAdapter(sim_adapter);
+        grid_POIs.setOnItemClickListener(this);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapter, View view, int position, long rowid) {
+
+        HashMap<String, Object> item = (HashMap<String, Object>) adapter.getItemAtPosition(position);
+        String itemText=(String)item.get("text");
+        Toast.makeText(this.getApplicationContext(), "You Select "+itemText, Toast.LENGTH_SHORT).show();
+
+    }
+
+    private List<Map<String, Object>> getData(){
+        //cion和iconName的长度是相同的，这里任选其一都可以
+        for(int i=0;i<icons.length;i++){
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("title", iconName[i]);
+            map.put("image", icons[i]);
+            map.put("price", prices[i]);
+            data_list.add(map);
+        }
+
+        return data_list;
     }
 }

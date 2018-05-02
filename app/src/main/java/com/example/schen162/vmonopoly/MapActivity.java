@@ -7,21 +7,38 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.CameraUpdateFactory;
+import com.amap.api.maps2d.model.Circle;
+import com.amap.api.maps2d.model.CircleOptions;
+import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.MyLocationStyle;
+import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.amap.api.services.poisearch.PoiSearch.OnPoiSearchListener;
+import com.amap.api.services.routepoisearch.RoutePOISearchQuery;
 
-public class MapActivity extends AppCompatActivity implements OnPoiSearchListener {
+import static android.R.attr.mode;
+
+public class MapActivity extends AppCompatActivity implements OnPoiSearchListener, AMapLocationListener {
 
     private com.amap.api.maps2d.MapView mapView;
     private com.amap.api.maps2d.AMap aMap;
     private PoiSearch poiSearch;// POI搜索
     private PoiSearch.Query query;// Poi查询条件类
-    AutoCompleteTextView searchText;
-    MyLocationStyle myLocationStyle;
+    private AutoCompleteTextView searchText;
+    private MyLocationStyle myLocationStyle;
+    private AMapLocationClient mlocationClient;
+    private AMapLocationClientOption mLocationOption;
+    private AMapLocation mCurLocation;
+    private Circle mCircle;
+    private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
+    private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,16 +58,23 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
         }
 
         searchText= (AutoCompleteTextView) findViewById(R.id.txt_keyword);
-        searchText.setHint("输入关键字");
+        searchText.setHint("设置目的地");
 
         myLocationStyle = new MyLocationStyle();
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);
         myLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));// 设置圆形的边框颜色
-        myLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));
+        //myLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));
         aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
         aMap.setMyLocationStyle(myLocationStyle);
         aMap.getUiSettings().setMyLocationButtonEnabled(true);
         aMap.setMyLocationEnabled(true);
+
+        mlocationClient = new AMapLocationClient(this);
+        mLocationOption = new AMapLocationClientOption();
+        mLocationOption.setInterval(2000);
+        mlocationClient.setLocationListener(this);
+        mlocationClient.setLocationOption(mLocationOption);
+        mlocationClient.startLocation();
     }
 
     @Override
@@ -93,14 +117,33 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
 
     public boolean onSearchPressed(View view) {
         query = new PoiSearch.Query(searchText.getText().toString(), "", "上海");
-        query.setPageSize(10);// 设置每页最多返回多少条poiitem
+        query.setPageSize(9);// 设置每页最多返回多少条poiitem
         query.setPageNum(1);// 设置查第一页
         query.setCityLimit(true);
+
+        if(null != mCurLocation) {
+            poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(mCurLocation.getLatitude(),
+                    mCurLocation.getLongitude()), 1000));
+        }
 
         poiSearch = new PoiSearch(this, query);
         poiSearch.setOnPoiSearchListener(this);
         poiSearch.searchPOIAsyn();
 
         return true;
+    }
+
+    @Override
+    public void onLocationChanged(AMapLocation aMapLocation) {
+        mCurLocation=aMapLocation;
+        mCircle.setCenter(new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude()));
+        mCircle.setRadius(1000);
+        CircleOptions options = new CircleOptions();
+        options.strokeWidth(1f);
+        options.fillColor(FILL_COLOR);
+        options.strokeColor(STROKE_COLOR);
+        options.center(new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude()));
+        options.radius(1000);
+        mCircle = aMap.addCircle(options);
     }
 }
