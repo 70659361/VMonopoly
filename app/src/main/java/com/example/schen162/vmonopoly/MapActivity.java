@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -31,7 +32,7 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
     private com.amap.api.maps2d.AMap aMap;
     private PoiSearch poiSearch;// POI搜索
     private PoiSearch.Query query;// Poi查询条件类
-    private AutoCompleteTextView searchText;
+    private TextView txCur;
     private MyLocationStyle myLocationStyle;
     private AMapLocationClient mlocationClient;
     private AMapLocationClientOption mLocationOption;
@@ -39,6 +40,7 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
     private Circle mCircle;
     private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
     private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
+    private final int SEARCH_RADIUS = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,16 +56,14 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
     protected void init() {
         if (aMap == null) {
             aMap = mapView.getMap();
-
         }
 
-        searchText= (AutoCompleteTextView) findViewById(R.id.txt_keyword);
-        searchText.setHint("设置目的地");
+        txCur= (TextView) findViewById(R.id.txt_curLocation);
+        txCur.setHint("获取当前位置...");
+        if(null != mCurLocation){
+            txCur.setText(mCurLocation.getPoiName());
+        }
 
-        myLocationStyle = new MyLocationStyle();
-        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);
-        myLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));// 设置圆形的边框颜色
-        //myLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));
         aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
         aMap.setMyLocationStyle(myLocationStyle);
         aMap.getUiSettings().setMyLocationButtonEnabled(true);
@@ -116,18 +116,19 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
     }
 
     public boolean onSearchPressed(View view) {
-        query = new PoiSearch.Query(searchText.getText().toString(), "", "上海");
+        String keyWord="美食";
+        query = new PoiSearch.Query(keyWord, "", "上海");
         query.setPageSize(9);// 设置每页最多返回多少条poiitem
         query.setPageNum(1);// 设置查第一页
         query.setCityLimit(true);
 
-        if(null != mCurLocation) {
-            poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(mCurLocation.getLatitude(),
-                    mCurLocation.getLongitude()), 1000));
-        }
-
         poiSearch = new PoiSearch(this, query);
         poiSearch.setOnPoiSearchListener(this);
+
+        if(null != mCurLocation) {
+            poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(mCurLocation.getLatitude(),
+                    mCurLocation.getLongitude()), SEARCH_RADIUS));
+        }
         poiSearch.searchPOIAsyn();
 
         return true;
@@ -136,6 +137,10 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         mCurLocation=aMapLocation;
+        String pi= mCurLocation.getPoiName();
+        String ds= mCurLocation.getDescription();
+
+        txCur.setText(pi);
         mCircle.setCenter(new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude()));
         mCircle.setRadius(1000);
         CircleOptions options = new CircleOptions();
@@ -143,7 +148,7 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
         options.fillColor(FILL_COLOR);
         options.strokeColor(STROKE_COLOR);
         options.center(new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude()));
-        options.radius(1000);
+        options.radius(SEARCH_RADIUS);
         mCircle = aMap.addCircle(options);
     }
 }

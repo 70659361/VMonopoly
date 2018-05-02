@@ -12,6 +12,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,6 +30,7 @@ public class DrivingActivity extends AppCompatActivity {
     private Button btnDrive;
     private Button btnLogin;
     private Timer timer;
+    private String USER_FILE="user.ini";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +46,21 @@ public class DrivingActivity extends AppCompatActivity {
         btnLogin.setHint("输入用户名");
         btnDrive.setText("开车挖矿");
         isDrive = false;
+
+        try {
+            FileInputStream uf = openFileInput(USER_FILE);
+            byte[] buffer = new byte[100];
+            uf.read(buffer);
+            if(0 != buffer[0]) {
+                String exUser = new String(buffer);
+                login(exUser);
+                txUsername.setText(exUser);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -78,20 +99,7 @@ public class DrivingActivity extends AppCompatActivity {
 
     public boolean onLoginPressed(View view){
         String us=txUsername.getText().toString();
-        AlertDialog.Builder alertDialogBuilder=new AlertDialog.Builder(this);
-        AlertDialog alertDialog = alertDialogBuilder.create();
-
-        if(UserManage.getInstance ().login(us)){
-            alertDialog.setMessage("登陆成功, 请开始挖矿！");
-            mileage=UserManage.getInstance().getCoins();
-            txMileage.setText(Integer.toString(mileage));
-            txMileage.setBackgroundColor(Color.RED);
-        }else {
-            alertDialog.setMessage("此用户不存在");
-        }
-        alertDialog.show();
-
-
+        login(us);
         return true;
     }
 
@@ -113,5 +121,30 @@ public class DrivingActivity extends AppCompatActivity {
             message.what = 1;
             handler.sendMessage(message);
         }
+    }
+
+    private void login(String us){
+        AlertDialog.Builder alertDialogBuilder=new AlertDialog.Builder(this);
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        if(UserManage.getInstance ().login(us)){
+            alertDialog.setMessage("登陆成功, 请开始挖矿！");
+            mileage=UserManage.getInstance().getCoins();
+            txMileage.setText(Integer.toString(mileage));
+            txMileage.setBackgroundColor(Color.RED);
+            //btnLogin.hide
+
+            try {
+                FileOutputStream fos = this.openFileOutput(USER_FILE, MODE_PRIVATE);
+                fos.write(us.getBytes());
+                fos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }else {
+            alertDialog.setMessage("此用户不存在");
+        }
+        alertDialog.show();
     }
 }

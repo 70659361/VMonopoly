@@ -35,14 +35,13 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
         setContentView(R.layout.activity_poilist);
         grid_POIs = (GridView) findViewById(R.id.grid_pois);
 
-
         init();
     }
 
     private void init(){
         data_list = new ArrayList<Map<String, Object>>();
         String [] from ={"title", "image","price"};
-        int [] to = {R.id.title, R.id.image, R.id.text};
+        int [] to = {R.id.title, R.id.image, R.id.price};
         sim_adapter = new SimpleAdapter(this, data_list, R.layout.grid_poiitem, from, to);
 
         if(null != pois) {
@@ -57,16 +56,16 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
                 prices[i] = "100福币";
             }
             getData();
+            grid_POIs.setAdapter(sim_adapter);
+            grid_POIs.setOnItemClickListener(this);
         }
-        grid_POIs.setAdapter(sim_adapter);
-        grid_POIs.setOnItemClickListener(this);
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapter, View view, int position, long rowid) {
 
         HashMap<String, Object> item = (HashMap<String, Object>) adapter.getItemAtPosition(position);
-        String itemText=(String)item.get("text");
+        String itemText=(String)item.get("title");
         Toast.makeText(this.getApplicationContext(), "You Select "+itemText, Toast.LENGTH_SHORT).show();
 
     }
@@ -80,7 +79,6 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
             map.put("price", prices[i]);
             data_list.add(map);
         }
-
         return data_list;
     }
 }

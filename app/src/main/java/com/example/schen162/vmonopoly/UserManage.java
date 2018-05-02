@@ -114,7 +114,7 @@ public class UserManage {
             HttpURLConnection connection=null;
             ByteArrayOutputStream infoStream = new ByteArrayOutputStream();
             try {
-                URL url = new URL("http://7a4b5b14.ngrok.io"+_url);
+                URL url = new URL("http://26677552.ngrok.io"+_url);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setConnectTimeout(2000);
                 connection.setRequestMethod(_method);
