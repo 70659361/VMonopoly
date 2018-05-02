@@ -2,6 +2,7 @@ package com.example.schen162.vmonopoly;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -37,10 +38,10 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
     private AMapLocationClient mlocationClient;
     private AMapLocationClientOption mLocationOption;
     private AMapLocation mCurLocation;
-    private Circle mCircle;
     private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
     private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
     private final int SEARCH_RADIUS = 10000;
+    private Circle circle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +65,20 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
             txCur.setText(mCurLocation.getPoiName());
         }
 
+        myLocationStyle = new MyLocationStyle();
+        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);
+        myLocationStyle.showMyLocation(true);
+
+        aMap.setMyLocationStyle(myLocationStyle);
+        aMap.setMyLocationEnabled(true);
         aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
         aMap.setMyLocationStyle(myLocationStyle);
         aMap.getUiSettings().setMyLocationButtonEnabled(true);
         aMap.setMyLocationEnabled(true);
 
-        mlocationClient = new AMapLocationClient(this);
         mLocationOption = new AMapLocationClientOption();
         mLocationOption.setInterval(2000);
+        mlocationClient = new AMapLocationClient(this);
         mlocationClient.setLocationListener(this);
         mlocationClient.setLocationOption(mLocationOption);
         mlocationClient.startLocation();
@@ -141,14 +148,10 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
         String ds= mCurLocation.getDescription();
 
         txCur.setText(pi);
-        mCircle.setCenter(new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude()));
-        mCircle.setRadius(1000);
-        CircleOptions options = new CircleOptions();
-        options.strokeWidth(1f);
-        options.fillColor(FILL_COLOR);
-        options.strokeColor(STROKE_COLOR);
-        options.center(new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude()));
-        options.radius(SEARCH_RADIUS);
-        mCircle = aMap.addCircle(options);
+
+        LatLng latlong = new LatLng(mCurLocation.getLatitude(), mCurLocation.getLongitude());
+        circle = aMap.addCircle(new CircleOptions().center(latlong).radius(SEARCH_RADIUS).strokeColor(Color.GREEN)
+                .fillColor(Color.GREEN).strokeWidth(25));
+        aMap.invalidate();
     }
 }
