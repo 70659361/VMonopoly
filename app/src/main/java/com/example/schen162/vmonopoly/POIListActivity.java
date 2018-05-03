@@ -77,12 +77,13 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
             for(int i=0; i<sz; i++){
                 for(int j=0; j<respSz; j++ ){
                     try {
-                        if(pois.get(i).getPoiId() == respJsonArr.getJSONObject(j).getString("poiid")){
+                        String jid = respJsonArr.getJSONObject(j).getString("poiid");
+                        if(ids[i].equals(jid)){
+                            icons[i] = R.drawable.sold;
+                            prices[i] = respJsonArr.getJSONObject(j).getString("poiprice")+"福币";
+                        }else{
                             icons[i] = R.drawable.onsale;
                             prices[i] = "100福币";
-                        }else{
-                            icons[i] = R.drawable.sold;
-                            prices[i] = respJsonArr.getJSONObject(j).getString("poiprice");
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
