@@ -14,6 +14,11 @@ import android.widget.Toast;
 
 import com.amap.api.services.core.PoiItem;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +47,6 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
         data_list = new ArrayList<Map<String, Object>>();
         String [] from ={"title", "image","price"};
         int [] to = {R.id.title, R.id.image, R.id.price};
-        sim_adapter = new SimpleAdapter(this, data_list, R.layout.grid_poiitem, from, to);
 
         if(null != pois) {
             int sz = pois.size();
@@ -50,12 +54,44 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
             icons = new int[sz];
             prices = new String[sz];
 
+            String[] ids = new String[sz];
             for(int i=0; i<sz; i++){
+                ids[i] = pois.get(i).getPoiId();
+            }
+            JSONArray respJsonArr=null;
+            int respSz = 0;
+
+            try {
+                String respJson = PoiManage.getInstance().getPOIs(ids);
+                respJsonArr = new JSONArray(respJson);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            if(null != respJsonArr){
+                respSz = respJsonArr.length();
+            }
+
+            for(int i=0; i<sz; i++){
+                for(int j=0; j<respSz; j++ ){
+                    try {
+                        if(pois.get(i).getPoiId() == respJsonArr.getJSONObject(j).getString("poiid")){
+                            icons[i] = R.drawable.onsale;
+                            prices[i] = "100福币";
+                        }else{
+                            icons[i] = R.drawable.sold;
+                            prices[i] = respJsonArr.getJSONObject(j).getString("poiprice");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 iconName[i] = pois.get(i).getTitle();
-                icons[i] = R.drawable.onsale;
-                prices[i] = "100福币";
             }
             getData();
+            sim_adapter = new SimpleAdapter(this, data_list, R.layout.grid_poiitem, from, to);
             grid_POIs.setAdapter(sim_adapter);
             grid_POIs.setOnItemClickListener(this);
         }

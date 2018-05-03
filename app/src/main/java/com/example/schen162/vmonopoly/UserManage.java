@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 public class UserManage {
 
     public static final int HTTP_RESPONSE = 0;
-    public static final String HTTP_HOST = "http://e66ac37a.ngrok.io";
 
     private static UserManage _inst;
     private String UserName;
@@ -91,7 +90,6 @@ public class UserManage {
     };
 
     private void httpAPICall(String url, String method){
-
         Thread _httpThread = new httpThread(url, method);
         _httpThread.start();
         try{
@@ -117,7 +115,7 @@ public class UserManage {
             HttpURLConnection connection=null;
             ByteArrayOutputStream infoStream = new ByteArrayOutputStream();
             try {
-                URL url = new URL(HTTP_HOST +_api);
+                URL url = new URL(AppConfig.HTTP_HOST +_api);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setConnectTimeout(2000);
                 connection.setRequestMethod(_method);
