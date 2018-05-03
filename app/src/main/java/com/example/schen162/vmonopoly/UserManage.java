@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 public class UserManage {
 
     public static final int HTTP_RESPONSE = 0;
+    public static final String HTTP_HOST = "http://e66ac37a.ngrok.io";
 
     private static UserManage _inst;
     private String UserName;
@@ -48,9 +49,11 @@ public class UserManage {
                 UserConins=jsResponse.getInt("coins");
                 return true;
             }else{
+                UserName="";
                 return false;
             }
         }catch (Exception e){
+            UserName="";
             return false;
         }
     }
@@ -97,16 +100,16 @@ public class UserManage {
     }
 
     class httpThread extends Thread{
-        private String _url;
+        private String _api;
         private String _method;
 
-        public httpThread(String url, String method){
-            _url=url;
+        public httpThread(String api, String method){
+            _api=api;
             _method=method;
         }
 
-        public httpThread(String url){
-            _url=url;
+        public httpThread(String api){
+            _api=api;
             _method="GET";
         }
 
@@ -114,7 +117,7 @@ public class UserManage {
             HttpURLConnection connection=null;
             ByteArrayOutputStream infoStream = new ByteArrayOutputStream();
             try {
-                URL url = new URL("http://26677552.ngrok.io"+_url);
+                URL url = new URL(HTTP_HOST +_api);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setConnectTimeout(2000);
                 connection.setRequestMethod(_method);
@@ -147,5 +150,12 @@ public class UserManage {
         return UserConins;
     }
 
+    public boolean isLogin(){
+        if("" != UserName){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
 }

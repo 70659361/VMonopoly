@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -56,9 +57,7 @@ public class DrivingActivity extends AppCompatActivity {
                 login(exUser);
                 txUsername.setText(exUser);
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -69,19 +68,25 @@ public class DrivingActivity extends AppCompatActivity {
     }
 
     public boolean onDrivePressed(View view) {
-        if (isDrive) {
-            timer.cancel();
-            txMileage.setBackgroundColor(Color.RED);
-            btnDrive.setText("开车挖矿");
-            UserManage.getInstance().updateCoins(mileage);
-        } else {
-            txMileage.setBackgroundColor(Color.GREEN);
-            btnDrive.setText("停止驾驶");
-            timer=new Timer();
-            TimerTask task = new MyTimerTask();
-            timer.schedule(task, 10000, 10000);
+        if(UserManage.getInstance().isLogin()) {
+            if (isDrive) {
+                timer.cancel();
+                txMileage.setBackgroundColor(Color.RED);
+                btnDrive.setText("开车挖矿");
+                UserManage.getInstance().updateCoins(mileage);
+            } else {
+                txMileage.setBackgroundColor(Color.GREEN);
+                btnDrive.setText("停止驾驶");
+                timer = new Timer();
+                TimerTask task = new MyTimerTask();
+                timer.schedule(task, 10000, 10000);
+            }
+            isDrive = !isDrive;
+
+        }else{
+            Toast.makeText(this.getApplicationContext(), "请登录", Toast.LENGTH_SHORT).show();
         }
-        isDrive=!isDrive;
+
         return true;
     }
 
@@ -98,8 +103,29 @@ public class DrivingActivity extends AppCompatActivity {
     }
 
     public boolean onLoginPressed(View view){
-        String us=txUsername.getText().toString();
+        String us =  txUsername.getText().toString().trim();
         login(us);
+        if(UserManage.getInstance().isLogin()) {
+            if (isDrive) {
+                timer.cancel();
+                txMileage.setBackgroundColor(Color.RED);
+                btnDrive.setText("开车挖矿");
+                UserManage.getInstance().updateCoins(mileage);
+            } else {
+                txMileage.setBackgroundColor(Color.GREEN);
+                btnDrive.setText("停止驾驶");
+                timer = new Timer();
+                TimerTask task = new MyTimerTask();
+                timer.schedule(task, 10000, 10000);
+            }
+        }else{
+            timer.cancel();
+            txMileage.setBackgroundColor(Color.RED);
+            btnDrive.setText("开车挖矿");
+            UserManage.getInstance().updateCoins(mileage);
+            isDrive=false;
+            txMileage.setText("");
+        }
         return true;
     }
 

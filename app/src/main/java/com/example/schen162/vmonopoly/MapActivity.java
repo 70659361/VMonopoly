@@ -61,21 +61,16 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
         if (aMap == null) {
             aMap = mapView.getMap();
         }
-
         txCur= (TextView) findViewById(R.id.txt_curLocation);
-        txCur.setHint("获取当前位置...");
-        if(null != mCurLocation){
-            txCur.setText(mCurLocation.getPoiName());
-        }
+        txCurCoins.setText("当前福币：" + new Integer(UserManage.getInstance().getCoins()).toString());
 
         myLocationStyle = new MyLocationStyle();
-        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);
+        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);
         myLocationStyle.showMyLocation(true);
 
         aMap.setMyLocationStyle(myLocationStyle);
         aMap.setMyLocationEnabled(true);
         aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-        aMap.setMyLocationStyle(myLocationStyle);
         aMap.getUiSettings().setMyLocationButtonEnabled(true);
         aMap.setMyLocationEnabled(true);
 
@@ -85,8 +80,6 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
         mlocationClient.setLocationListener(this);
         mlocationClient.setLocationOption(mLocationOption);
         mlocationClient.startLocation();
-
-        txCurCoins.setText("当前福币：" + new Integer(UserManage.getInstance().getCoins()).toString());
     }
 
     @Override
@@ -150,16 +143,19 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
     public void onLocationChanged(AMapLocation aMapLocation) {
         if(null != circle){ circle.remove();}
         mCurLocation=aMapLocation;
-        String pi= mCurLocation.getPoiName();
-        String ds= mCurLocation.getDescription();
 
-        txCur.setText(pi);
+        updateLocation();
+    }
 
-        LatLng latlong = new LatLng(mCurLocation.getLatitude(), mCurLocation.getLongitude());
-        circle = aMap.addCircle(new CircleOptions().center(latlong).radius(SEARCH_RADIUS).strokeColor(Color.GREEN)
-                .fillColor(Color.GREEN).strokeWidth(25));
-        aMap.invalidate();
+    private void updateLocation() {
+        if(null != mCurLocation){
+            txCur.setText("当前位置："+mCurLocation.getPoiName());
 
-        txCurCoins.setText("当前福币：" + new Integer(UserManage.getInstance().getCoins()).toString());
+            LatLng latlong = new LatLng(mCurLocation.getLatitude(), mCurLocation.getLongitude());
+            circle = aMap.addCircle(new CircleOptions().center(latlong).radius(SEARCH_RADIUS).strokeColor(Color.GREEN)
+                    .fillColor(Color.GREEN).strokeWidth(25));
+        }else {
+            txCur.setHint("获取当前位置...");
+        }
     }
 }
