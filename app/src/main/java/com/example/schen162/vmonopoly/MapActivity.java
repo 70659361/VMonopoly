@@ -121,7 +121,7 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
     }
 
     public boolean onSearchPressed(View view) {
-        String keyWord="美食";
+        String keyWord="美食,酒店";
         query = new PoiSearch.Query(keyWord, "", "上海");
         query.setPageSize(9);// 设置每页最多返回多少条poiitem
         query.setPageNum(1);// 设置查第一页
