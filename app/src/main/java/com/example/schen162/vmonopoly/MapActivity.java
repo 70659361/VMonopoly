@@ -41,7 +41,7 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
     private AMapLocation mCurLocation;
     private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
     private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
-    private final int SEARCH_RADIUS = 300;
+    private final int SEARCH_RADIUS = 100;
     private Circle circle;
 
     @Override

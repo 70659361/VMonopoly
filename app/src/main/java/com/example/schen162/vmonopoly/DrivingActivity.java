@@ -51,9 +51,10 @@ public class DrivingActivity extends AppCompatActivity {
         try {
             FileInputStream uf = openFileInput(USER_FILE);
             byte[] buffer = new byte[100];
+            for(int i=0;i<buffer.length;i++){buffer[i]=0;}
             uf.read(buffer);
             if(0 != buffer[0]) {
-                String exUser = new String(buffer);
+                String exUser = new String(buffer).trim();
                 login(exUser);
                 txUsername.setText(exUser);
             }

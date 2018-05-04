@@ -5,5 +5,5 @@ package com.example.schen162.vmonopoly;
  */
 
 public class AppConfig {
-    public static final String HTTP_HOST = "http://e66ac37a.ngrok.io";
+    public static final String HTTP_HOST = " http://cbae4a17.ngrok.io";
 }

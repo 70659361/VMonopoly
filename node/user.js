@@ -1,6 +1,7 @@
 var express=require('express');
 var app = express();
 var ADODB = require('node-adodb');
+const bodyParser=require('body-parser');
 const connection = ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0; Data Source=monodb.mdb;');
 
 
@@ -60,10 +61,39 @@ app.post('/coins/:username/:coins', function(req, res){
 	res.send("OKs");
 
 });
-	
+
+app.use('/pois', require('body-parser').json(), function(req, res){
+	console.log(req.body);
+	var n = req.body.id.length;
+	var ids = new Array();
+	var querySQL = 'SELECT * from poi WHERE poiid IN (';
+	for(var i=0;i<n-1;i++){
+		querySQL +="\""+ (req.body.id[i])+'\",';
+	}
+	querySQL += "\""+(req.body.id[n-1])+'\")';
+	console.log(querySQL);
+	var result="";
+	connection.query(querySQL).then(pois=>{
+		console.log(pois);
+		result=JSON.stringify(pois);
+		res.send(result);
+	}).catch(err=>{
+		res.send(result);
+		console.log(err);
+	});	
+});
+
+app.post('/buy/:username/:poiid/:price', function(req, res){
+	var loginUsr=req.params.username;
+	var poiid=req.params.poiid;
+	var price=req.params.price;
+	res.send("");
+});
+
 var server = app.listen(8888, function () {
   var host = server.address().address;
   var port = server.address().port;
 
   console.log('Example app listening at http://%s:%s', host, port);
 });
+

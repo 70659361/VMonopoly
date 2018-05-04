@@ -1,6 +1,10 @@
 package com.example.schen162.vmonopoly;
 
+import android.app.AlertDialog;
+import android.app.Application;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.UserManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.services.core.PoiItem;
@@ -28,17 +33,21 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
 
     protected static ArrayList<PoiItem> pois = null;
     private GridView grid_POIs;
+    private TextView txCoins;
     private List<Map<String, Object>> data_list;
     private SimpleAdapter sim_adapter;
+
     private int[] icons;
     private String[] prices;
     private String[] iconName;
+    private String[] ids;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_poilist);
         grid_POIs = (GridView) findViewById(R.id.grid_pois);
+        txCoins = (TextView) findViewById(R.id.txt_coins);
 
         init();
     }
@@ -54,7 +63,7 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
             icons = new int[sz];
             prices = new String[sz];
 
-            String[] ids = new String[sz];
+            ids = new String[sz];
             for(int i=0; i<sz; i++){
                 ids[i] = pois.get(i).getPoiId();
             }
@@ -96,24 +105,49 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
             grid_POIs.setAdapter(sim_adapter);
             grid_POIs.setOnItemClickListener(this);
         }
+
+        txCoins.setText("当前福币："+UserManage.getInstance().getCoins());
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapter, View view, int position, long rowid) {
+    public void onItemClick(AdapterView<?> adapter, View view, final int position, long rowid) {
 
         HashMap<String, Object> item = (HashMap<String, Object>) adapter.getItemAtPosition(position);
-        String itemText=(String)item.get("title");
-        Toast.makeText(this.getApplicationContext(), "You Select "+itemText, Toast.LENGTH_SHORT).show();
+        int icon=(int)item.get("image");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+        if(icon == R.drawable.onsale){
+            builder.setMessage("您想购买此地吗？").setPositiveButton("是", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    String stPrice=prices[position].substring(0, prices[position].lastIndexOf("福"));
+                    int inPrice=Integer.parseInt(stPrice);
+                    if(inPrice > UserManage.getInstance().getCoins()){
+                        Toast.makeText(getApplicationContext(), "对不起，您的福币不够。", Toast.LENGTH_SHORT);
+                    }else{
+                        if(true == PoiManage.getInstance().buyPOI(UserManage.getInstance().getUser(), ids[position], prices[position])){
+                            Toast.makeText(getApplicationContext(), "购买成功！", Toast.LENGTH_SHORT);
+                        }
+                    }
+                }
+            }).setNegativeButton("否", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+        }else{
+            builder.setMessage("这块地已经被买走了，看看其他的吧。");
+        }
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private List<Map<String, Object>> getData(){
-        //cion和iconName的长度是相同的，这里任选其一都可以
         for(int i=0;i<icons.length;i++){
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("title", iconName[i]);
             map.put("image", icons[i]);
             map.put("price", prices[i]);
+            map.put("id", ids[i]);
             data_list.add(map);
         }
         return data_list;

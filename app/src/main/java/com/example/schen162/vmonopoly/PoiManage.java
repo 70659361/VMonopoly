@@ -48,6 +48,18 @@ public class PoiManage {
         return httpResponse;
     }
 
+    public boolean buyPOI(String user, String poiid, String price){
+
+        try {
+            String api="/buy/"+user+"/"+poiid+"/"+price;
+            httpPOSTAPICall(api, "{}");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
     private void httpPOSTAPICall(String api, String body) throws IOException {
         Thread _httpThread = new PoiManage.httpThread(api, body);
         _httpThread.start();
