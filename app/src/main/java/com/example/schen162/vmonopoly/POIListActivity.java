@@ -57,7 +57,7 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
         String [] from ={"title", "image","price"};
         int [] to = {R.id.title, R.id.image, R.id.price};
 
-        if(null != pois) {
+        if(0 < pois.size()) {
             int sz = pois.size();
             iconName = new String[sz];
             icons = new int[sz];
@@ -106,6 +106,8 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
             sim_adapter = new SimpleAdapter(this, data_list, R.layout.grid_poiitem, from, to);
             grid_POIs.setAdapter(sim_adapter);
             grid_POIs.setOnItemClickListener(this);
+        }else{
+            Toast.makeText(getApplicationContext(), "周围没有POI", Toast.LENGTH_SHORT);
         }
 
         txCoins.setText("当前福币："+UserManage.getInstance().getCoins());
