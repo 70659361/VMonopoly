@@ -41,7 +41,7 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
     private AMapLocation mCurLocation;
     private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
     private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
-    private final int SEARCH_RADIUS = 100;
+    private final int SEARCH_RADIUS = 200;
     private Circle circle;
 
     @Override
@@ -121,7 +121,7 @@ public class MapActivity extends AppCompatActivity implements OnPoiSearchListene
     }
 
     public boolean onSearchPressed(View view) {
-        String keyWord="美食,酒店";
+        String keyWord="景点,美食,酒店";
         query = new PoiSearch.Query(keyWord, "", "上海");
         query.setPageSize(9);// 设置每页最多返回多少条poiitem
         query.setPageNum(1);// 设置查第一页
