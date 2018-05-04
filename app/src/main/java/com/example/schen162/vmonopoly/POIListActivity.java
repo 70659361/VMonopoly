@@ -87,9 +87,11 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
                 for(int j=0; j<respSz; j++ ){
                     try {
                         String jid = respJsonArr.getJSONObject(j).getString("poiid");
+                        iconName[i]=pois.get(i).getTitle();
                         if(ids[i].equals(jid)){
                             icons[i] = R.drawable.sold;
                             prices[i] = respJsonArr.getJSONObject(j).getString("poiprice")+"福币";
+                            break;
                         }else{
                             icons[i] = R.drawable.onsale;
                             prices[i] = "100福币";
@@ -98,16 +100,13 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
                         e.printStackTrace();
                     }
                 }
-                iconName[i] = pois.get(i).getTitle();
-                icons[i] = R.drawable.onsale;
-                prices[i] = "100福币";
             }
             getData();
             sim_adapter = new SimpleAdapter(this, data_list, R.layout.grid_poiitem, from, to);
             grid_POIs.setAdapter(sim_adapter);
             grid_POIs.setOnItemClickListener(this);
         }else{
-            Toast.makeText(getApplicationContext(), "周围没有POI", Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), "周围没有POI", Toast.LENGTH_SHORT).show();
         }
 
         txCoins.setText("当前福币："+UserManage.getInstance().getCoins());
@@ -126,10 +125,10 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
                     String stPrice=prices[position].substring(0, prices[position].lastIndexOf("福"));
                     int inPrice=Integer.parseInt(stPrice);
                     if(inPrice > UserManage.getInstance().getCoins()){
-                        Toast.makeText(getApplicationContext(), "对不起，您的福币不够。", Toast.LENGTH_SHORT);
+                        Toast.makeText(getApplicationContext(), "对不起，您的福币不够。", Toast.LENGTH_SHORT).show();
                     }else{
-                        if(true == PoiManage.getInstance().buyPOI(UserManage.getInstance().getUser(), ids[position], prices[position])){
-                            Toast.makeText(getApplicationContext(), "购买成功！", Toast.LENGTH_SHORT);
+                        if(true == PoiManage.getInstance().buyPOI(UserManage.getInstance().getUser(), ids[position], stPrice)){
+                            Toast.makeText(getApplicationContext(), "购买成功！", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }

@@ -87,6 +87,30 @@ app.post('/buy/:username/:poiid/:price', function(req, res){
 	var loginUsr=req.params.username;
 	var poiid=req.params.poiid;
 	var price=req.params.price;
+	
+	var querySQL = 'SELECT ID from userprofile where login="'+loginUsr+'"';
+	var uid="";
+	connection.query(querySQL).then(user=>{
+		console.log(user);
+		if(user != "[]"){
+			uid=user[0]["ID"];
+			console.log(uid);
+			
+			try{
+				querySQL = 'INSERT INTO poi (poiid, poiowner, poiprice ) VALUES("'+poiid+'",'+uid+', '+price+')';
+				console.log(querySQL);
+				connection.execute(querySQL);
+				
+				querySQL = 'UPDATE usercoins set coins=coins-'+price+' WHERE userid='+uid;
+				console.log(querySQL);
+				connection.execute(querySQL);
+			}catch(e){
+			}
+		}
+	}).catch(err=>{
+		console.log(err);
+	});	
+		
 	res.send("");
 });
 
