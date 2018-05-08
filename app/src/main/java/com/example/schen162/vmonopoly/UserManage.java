@@ -75,20 +75,6 @@ public class UserManage {
         }catch(Exception e){}
     }
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case HTTP_RESPONSE:
-                    HttpResponse = msg.obj.toString();
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
-
     private void httpAPICall(String url, String method){
         Thread _httpThread = new httpThread(url, method);
         _httpThread.start();

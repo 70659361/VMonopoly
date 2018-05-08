@@ -20,39 +20,33 @@ import java.util.TimerTask;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private TextView txMileage;
     private EditText txUsername;
-    private TextView txHttp;
-    private int mileage;
-    private boolean isDrive;
-    private Button btnDrive;
+    private EditText txPwd;
+    private EditText txHost;
     private Button btnLogin;
-    private Timer timer;
-    private String USER_FILE="user.ini";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        txMileage = (TextView) findViewById(R.id.txt_m);
-        txHttp = (TextView) findViewById(R.id.txt_http);
         txUsername = (EditText) findViewById(R.id.txt_username);
-        btnDrive = (Button) findViewById(R.id.btn_drive);
+        txPwd = (EditText) findViewById(R.id.txt_pwd);
+        txHost = (EditText) findViewById(R.id.txt_host);
         btnLogin = (Button) findViewById(R.id.btn_login);
 
-        btnLogin.setHint("输入用户名");
-        btnDrive.setText("开车挖矿");
-        isDrive = false;
+        txUsername.setHint("输入用户名");
+        txPwd.setHint("输入密码");
+        txHost.setText(AppConfig.HTTP_HOST);
 
         try {
-            FileInputStream uf = openFileInput(USER_FILE);
+            FileInputStream uf = openFileInput(AppConfig.USER_FILE);
             byte[] buffer = new byte[100];
             for(int i=0;i<buffer.length;i++){buffer[i]=0;}
             uf.read(buffer);
             if(0 != buffer[0]) {
                 String exUser = new String(buffer).trim();
-                login(exUser);
                 txUsername.setText(exUser);
             }
         } catch (Exception e) {
@@ -65,110 +59,33 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
     }
 
-    public boolean onDrivePressed(View view) {
-        if(UserManage.getInstance().isLogin()) {
-            if (isDrive) {
-                timer.cancel();
-                txMileage.setBackgroundColor(Color.RED);
-                btnDrive.setText("开车挖矿");
-                UserManage.getInstance().updateCoins(mileage);
-            } else {
-                txMileage.setBackgroundColor(Color.GREEN);
-                btnDrive.setText("停止驾驶");
-                timer = new Timer();
-                TimerTask task = new MyTimerTask();
-                timer.schedule(task, 10000, 10000);
-            }
-            isDrive = !isDrive;
-
-        }else{
-            Toast.makeText(this.getApplicationContext(), "请登录", Toast.LENGTH_SHORT).show();
-        }
-
-        return true;
-    }
-
-    public boolean onMapPressed(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        return true;
-    }
-
-    public boolean onPOIPressed(View view) {
-        Intent intent = new Intent(this, POIListActivity.class);
-        startActivity(intent);
-        return true;
-    }
-
     public boolean onLoginPressed(View view){
         String us =  txUsername.getText().toString().trim();
-        login(us);
-        if(UserManage.getInstance().isLogin()) {
-            if (isDrive) {
-                timer.cancel();
-                txMileage.setBackgroundColor(Color.RED);
-                btnDrive.setText("开车挖矿");
-                UserManage.getInstance().updateCoins(mileage);
-            } else {
-                txMileage.setBackgroundColor(Color.GREEN);
-                btnDrive.setText("停止驾驶");
-                timer = new Timer();
-                TimerTask task = new MyTimerTask();
-                timer.schedule(task, 10000, 10000);
-            }
+        if(login(us)) {
+            Toast.makeText(this.getApplicationContext(), "登陆成功", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this,MainActivity.class);
+            startActivity(intent);
         }else{
-            timer.cancel();
-            txMileage.setBackgroundColor(Color.RED);
-            btnDrive.setText("开车挖矿");
-            UserManage.getInstance().updateCoins(mileage);
-            isDrive=false;
-            txMileage.setText("");
+            Toast.makeText(this.getApplicationContext(), "登陆失败", Toast.LENGTH_SHORT).show();
         }
         return true;
     }
 
-    final Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                    mileage++;
-                    txMileage.setText(Integer.toString(mileage));
-                    break;
-            }
-            super.handleMessage(msg);
-        }
-    };
-
-    private class MyTimerTask extends TimerTask {
-        public void run() {
-            Message message = new Message();
-            message.what = 1;
-            handler.sendMessage(message);
-        }
-    }
-
-    private void login(String us){
+    private boolean login(String us){
         AlertDialog.Builder alertDialogBuilder=new AlertDialog.Builder(this);
         AlertDialog alertDialog = alertDialogBuilder.create();
-
-        if(UserManage.getInstance ().login(us)){
-            alertDialog.setMessage("登陆成功, 请开始挖矿！");
-            mileage=UserManage.getInstance().getCoins();
-            txMileage.setText(Integer.toString(mileage));
-            txMileage.setBackgroundColor(Color.RED);
-            //btnLogin.hide
-
+        boolean ret=UserManage.getInstance ().login(us);
+        if(ret){
             try {
-                FileOutputStream fos = this.openFileOutput(USER_FILE, MODE_PRIVATE);
+                FileOutputStream fos = this.openFileOutput(AppConfig.HTTP_HOST, MODE_PRIVATE);
                 fos.write(us.getBytes());
                 fos.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }else {
             alertDialog.setMessage("此用户不存在");
         }
-        alertDialog.show();
+        return ret;
     }
 }
