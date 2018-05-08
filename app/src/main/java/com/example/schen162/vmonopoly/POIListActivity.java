@@ -91,11 +91,11 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
                         if(ids[i].equals(jid)){
                             icons[i] = R.drawable.sold;
                             prices[i] = respJsonArr.getJSONObject(j).getString("poiprice")+"福币";
-                            break;
+                            continue;
                         }else{
                             icons[i] = R.drawable.onsale;
                             prices[i] = "100福币";
-                            break;
+                            continue;
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -104,7 +104,7 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
                 iconName[i]=pois.get(i).getTitle();
                 icons[i] = R.drawable.onsale;
                 prices[i] = "100福币";
-                break;
+                continue;
             }
             getData();
             sim_adapter = new SimpleAdapter(this, data_list, R.layout.grid_poiitem, from, to);

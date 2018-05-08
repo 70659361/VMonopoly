@@ -30,6 +30,7 @@ import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.amap.api.services.poisearch.PoiSearch.OnPoiSearchListener;
+import com.amap.api.services.routepoisearch.RoutePOISearchResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +52,8 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     private AMapLocationClientOption mLocationOption;
     private AMapLocation mCurLocation;
 
-    private static final int STROKE_COLOR = Color.argb(1,1,1,1);
-    private static final int FILL_COLOR = Color.argb(1,1,1,1);
+    private static final int STROKE_COLOR = Color.argb(10,15,15,15);
+    private static final int FILL_COLOR = Color.argb(10,15,15,15);
 
     private Circle circle;
     private myPoiOverlay poiOverlay;
@@ -146,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     }
 
     public boolean onSearchPressed(View view) {
+
         query = new PoiSearch.Query(AppConfig.SEARCH_KEYWORDS, "", AppConfig.SEARCH_CITY);
         query.setPageSize(AppConfig.SEARCH_POI_NUM);// 设置每页最多返回多少条poiitem
         query.setPageNum(AppConfig.SEARCH_POI_PAGE);// 设置查第一页
