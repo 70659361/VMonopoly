@@ -1,5 +1,6 @@
 package com.example.schen162.vmonopoly;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
@@ -159,6 +160,11 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
         poiSearch.searchPOIAsyn();
 
         return true;
+    }
+
+    public void onDicePressed(View view) {
+        Intent intent = new Intent(this,POIListActivity.class);
+        startActivity(intent);
     }
 
     @Override
