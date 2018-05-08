@@ -1,18 +1,9 @@
 package com.example.schen162.vmonopoly;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.MotionEvent;
-import android.view.View;
-import android.content.Intent;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -31,7 +22,7 @@ public class LanuchActivity extends Activity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(LanuchActivity.this, DrivingActivity.class));
+                startActivity(new Intent(LanuchActivity.this, LoginActivity.class));
                 LanuchActivity.this.finish();
             }
         }, time);

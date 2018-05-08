@@ -31,7 +31,7 @@ import com.amap.api.services.poisearch.PoiSearch.OnPoiSearchListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapActivity extends AppCompatActivity implements OnPoiSearchListener, AMapLocationListener {
+public class MainActivity extends AppCompatActivity implements OnPoiSearchListener, AMapLocationListener {
 
     private com.amap.api.maps2d.MapView mapView;
     private com.amap.api.maps2d.AMap aMap;

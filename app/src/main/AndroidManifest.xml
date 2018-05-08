@@ -40,8 +40,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".DrivingActivity"></activity>
-        <activity android:name=".MapActivity"></activity>
+        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".MainActivity"></activity>
         <activity android:name=".POIListActivity"></activity>
 
         <service android:name="com.amap.api.location.APSService"></service>

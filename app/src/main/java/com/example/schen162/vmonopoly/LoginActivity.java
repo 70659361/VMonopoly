@@ -18,7 +18,7 @@ import java.io.FileOutputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class DrivingActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     private TextView txMileage;
     private EditText txUsername;
@@ -89,7 +89,7 @@ public class DrivingActivity extends AppCompatActivity {
     }
 
     public boolean onMapPressed(View view) {
-        Intent intent = new Intent(this, MapActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         return true;
     }
