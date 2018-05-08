@@ -14,10 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,7 +33,7 @@ public class DrivingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_driving);
+        setContentView(R.layout.activity_login);
 
         txMileage = (TextView) findViewById(R.id.txt_m);
         txHttp = (TextView) findViewById(R.id.txt_http);
