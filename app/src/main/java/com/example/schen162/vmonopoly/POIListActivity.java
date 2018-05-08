@@ -101,6 +101,7 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
                         e.printStackTrace();
                     }
                 }
+                iconName[i]=pois.get(i).getTitle();
                 icons[i] = R.drawable.onsale;
                 prices[i] = "100福币";
                 break;

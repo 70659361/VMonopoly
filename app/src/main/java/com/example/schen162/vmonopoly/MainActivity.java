@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
 
     private static final int STROKE_COLOR = Color.argb(1,1,1,1);
     private static final int FILL_COLOR = Color.argb(1,1,1,1);
-    private final int SEARCH_RADIUS = 200;
+
     private Circle circle;
     private myPoiOverlay poiOverlay;
     private int[] markers = {R.drawable.poi };
@@ -136,8 +136,8 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     @Override
     public void onPoiSearched(PoiResult result, int rCode) {
         //Intent intent = new Intent(this,POIListActivity.class);
-        List<PoiItem> poiItems = result.getPois();
-        POIListActivity.pois = result.getPois();
+        ArrayList<PoiItem> poiItems = result.getPois();
+        POIListActivity.pois = poiItems;
         //startActivity(intent);
 
         poiOverlay = new myPoiOverlay(aMap, poiItems);
@@ -146,10 +146,9 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     }
 
     public boolean onSearchPressed(View view) {
-        String keyWord="美食,酒店";
-        query = new PoiSearch.Query(keyWord, "", "上海");
-        query.setPageSize(9);// 设置每页最多返回多少条poiitem
-        query.setPageNum(1);// 设置查第一页
+        query = new PoiSearch.Query(AppConfig.SEARCH_KEYWORDS, "", AppConfig.SEARCH_CITY);
+        query.setPageSize(AppConfig.SEARCH_POI_NUM);// 设置每页最多返回多少条poiitem
+        query.setPageNum(AppConfig.SEARCH_POI_PAGE);// 设置查第一页
         query.setCityLimit(true);
 
         poiSearch = new PoiSearch(this, query);
@@ -157,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
 
         if(null != mCurLocation) {
             poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(mCurLocation.getLatitude(),
-                    mCurLocation.getLongitude()), SEARCH_RADIUS));
+                    mCurLocation.getLongitude()), AppConfig.SEARCH_RADIUS));
         }
         poiSearch.searchPOIAsyn();
 
@@ -182,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
             txCurLoc.setText("当前位置："+mCurLocation.getPoiName());
 
             LatLng latlong = new LatLng(mCurLocation.getLatitude(), mCurLocation.getLongitude());
-            circle = aMap.addCircle(new CircleOptions().center(latlong).radius(SEARCH_RADIUS).strokeColor(STROKE_COLOR)
+            circle = aMap.addCircle(new CircleOptions().center(latlong).radius(AppConfig.SEARCH_RADIUS).strokeColor(STROKE_COLOR)
                     .fillColor(FILL_COLOR).strokeWidth(25));
         }else {
             txCurLoc.setHint("获取当前位置...");
