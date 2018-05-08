@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +20,7 @@ import java.io.FileOutputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements TextWatcher {
 
     private EditText txUsername;
     private EditText txPwd;
@@ -52,6 +54,8 @@ public class LoginActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        txHost.addTextChangedListener(this);
     }
 
     @Override
@@ -87,5 +91,21 @@ public class LoginActivity extends AppCompatActivity {
             alertDialog.setMessage("此用户不存在");
         }
         return ret;
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+        String newHost = editable.toString();
+        AppConfig.setHttpHost(newHost);
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2){
+
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
     }
 }

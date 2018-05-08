@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
         mapView = (com.amap.api.maps2d.MapView) findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);// 此方法必须重写
 
-        txCurCoins = (TextView) findViewById(R.id.txt_CurCoins);
+        txCurCoins = (TextView) findViewById(R.id.txt_curCoins);
 
         init();
     }
