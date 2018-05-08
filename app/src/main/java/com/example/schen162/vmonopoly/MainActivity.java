@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -34,34 +36,29 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnPoiSearchListener, AMapLocationListener {
 
-    private com.amap.api.maps2d.MapView mapView;
-    private com.amap.api.maps2d.AMap aMap;
+
     private PoiSearch poiSearch;// POI搜索
     private PoiSearch.Query query;// Poi查询条件类
     private TextView txCurLoc;
     private TextView txCurUser;
     private TextView txCurCoins;
+    private ImageButton btnWalk;
+
+    private com.amap.api.maps2d.MapView mapView;
+    private com.amap.api.maps2d.AMap aMap;
     private MyLocationStyle myLocationStyle;
     private AMapLocationClient mlocationClient;
     private AMapLocationClientOption mLocationOption;
     private AMapLocation mCurLocation;
+
     private static final int STROKE_COLOR = Color.argb(1,1,1,1);
     private static final int FILL_COLOR = Color.argb(1,1,1,1);
     private final int SEARCH_RADIUS = 200;
     private Circle circle;
     private myPoiOverlay poiOverlay;
+    private int[] markers = {R.drawable.poi };
 
-    private int[] markers = {R.drawable.poi,
-            R.drawable.poi,
-            R.drawable.poi,
-            R.drawable.poi,
-            R.drawable.poi,
-            R.drawable.poi,
-            R.drawable.poi,
-            R.drawable.poi,
-            R.drawable.poi,
-            R.drawable.poi
-    };
+    private boolean mIsWalking=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
         txCurLoc = (TextView) findViewById(R.id.txt_curLocation);
         txCurCoins = (TextView) findViewById(R.id.txt_curCoins);
         txCurUser = (TextView) findViewById(R.id.txt_curUser);
+        btnWalk = (ImageButton) findViewById(R.id.btn_walk);
 
         init();
     }
@@ -307,5 +305,19 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
                 return icon;
             }
         }
+    }
+
+    public boolean onWalkPressed(View view) {
+        toggleWalk();
+        return true;
+    }
+
+    private void toggleWalk(){
+        if (mIsWalking){
+            btnWalk.setBackgroundColor(Color.RED);
+        }else {
+            btnWalk.setBackgroundColor(Color.GREEN);
+        }
+        mIsWalking = !mIsWalking;
     }
 }

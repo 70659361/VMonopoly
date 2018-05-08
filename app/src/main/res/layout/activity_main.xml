@@ -75,11 +75,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:layout_weight="1"
+        android:onClick="onWalkPressed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:srcCompat="@drawable/walk"
-        android:layout_marginStart="8dp" />
+        app:srcCompat="@drawable/walk" />
 
     <ImageButton
         android:id="@+id/btn_bike"

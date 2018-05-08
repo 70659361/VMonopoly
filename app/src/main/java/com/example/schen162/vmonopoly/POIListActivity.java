@@ -95,11 +95,15 @@ public class POIListActivity extends AppCompatActivity implements AdapterView.On
                         }else{
                             icons[i] = R.drawable.onsale;
                             prices[i] = "100福币";
+                            break;
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
+                icons[i] = R.drawable.onsale;
+                prices[i] = "100福币";
+                break;
             }
             getData();
             sim_adapter = new SimpleAdapter(this, data_list, R.layout.grid_poiitem, from, to);
