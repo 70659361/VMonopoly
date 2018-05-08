@@ -38,7 +38,8 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     private com.amap.api.maps2d.AMap aMap;
     private PoiSearch poiSearch;// POI搜索
     private PoiSearch.Query query;// Poi查询条件类
-    private TextView txCur;
+    private TextView txCurLoc;
+    private TextView txCurUser;
     private TextView txCurCoins;
     private MyLocationStyle myLocationStyle;
     private AMapLocationClient mlocationClient;
@@ -70,7 +71,9 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
         mapView = (com.amap.api.maps2d.MapView) findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);// 此方法必须重写
 
+        txCurLoc = (TextView) findViewById(R.id.txt_curLocation);
         txCurCoins = (TextView) findViewById(R.id.txt_curCoins);
+        txCurUser = (TextView) findViewById(R.id.txt_curUser);
 
         init();
     }
@@ -79,8 +82,9 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
         if (aMap == null) {
             aMap = mapView.getMap();
         }
-        txCur= (TextView) findViewById(R.id.txt_curLocation);
+
         txCurCoins.setText("当前福币：" + new Integer(UserManage.getInstance().getCoins()).toString());
+        txCurUser.setText(UserManage.getInstance().getUser());
 
         myLocationStyle = new MyLocationStyle();
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);
@@ -177,13 +181,13 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
 
     private void updateLocation() {
         if(null != mCurLocation){
-            txCur.setText("当前位置："+mCurLocation.getPoiName());
+            txCurLoc.setText("当前位置："+mCurLocation.getPoiName());
 
             LatLng latlong = new LatLng(mCurLocation.getLatitude(), mCurLocation.getLongitude());
             circle = aMap.addCircle(new CircleOptions().center(latlong).radius(SEARCH_RADIUS).strokeColor(STROKE_COLOR)
                     .fillColor(FILL_COLOR).strokeWidth(25));
         }else {
-            txCur.setHint("获取当前位置...");
+            txCurLoc.setHint("获取当前位置...");
         }
     }
 
