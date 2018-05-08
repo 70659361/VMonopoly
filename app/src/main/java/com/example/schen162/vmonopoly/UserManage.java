@@ -45,7 +45,7 @@ public class UserManage {
         try {
             if(null != jsResponse){
                 UserName=username;
-                UserConins=jsResponse.getInt("coins");
+                UserConins=jsResponse.getInt("coin");
                 return true;
             }else{
                 UserName="";
@@ -61,7 +61,7 @@ public class UserManage {
         try {
             httpAPICall("/coins/"+UserName, "GET");
             if (null != jsResponse) {
-                UserConins = jsResponse.getInt("coins");
+                UserConins = jsResponse.getInt("coin");
             }
         }catch(Exception e){}
 

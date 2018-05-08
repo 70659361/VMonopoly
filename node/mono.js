@@ -13,7 +13,7 @@ app.get('/login/:username', function(req, res){
 	
 	console.log('GET /login/'+loginUsr);
 	
-	var querySQL = 'SELECT login, coin FROM user WHERE login="'+loginUsr+'"';
+	var querySQL = 'SELECT login, coin FROM users WHERE login="'+loginUsr+'"';
 	console.log(querySQL);
 	
 	connection.query(querySQL).then(users=>{
@@ -33,7 +33,7 @@ app.get('/coins/:username', function(req, res){
 	console.log('GET /coins/'+loginUsr);
 
 		
-	var querySQL = 'SELECT login, coinFROM user WHERE login="'+loginUsr+'"';
+	var querySQL = 'SELECT login, coinFROM users WHERE login="'+loginUsr+'"';
 	console.log(querySQL);
 	
 	
@@ -88,7 +88,7 @@ app.post('/buy/:username/:poiid/:price', function(req, res){
 	var poiid=req.params.poiid;
 	var price=req.params.price;
 	
-	var querySQL = 'SELECT ID from user where login="'+loginUsr+'"';
+	var querySQL = 'SELECT ID FROM users where login="'+loginUsr+'"';
 	var uid="";
 	connection.query(querySQL).then(user=>{
 		console.log(user);
