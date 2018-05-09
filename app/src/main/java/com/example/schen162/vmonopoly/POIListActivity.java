@@ -21,7 +21,7 @@ import java.util.List;
 
 public class POIListActivity extends AppCompatActivity {
 
-    protected static ArrayList<PoiItem> mPOIs = null;
+    protected static ArrayList<MonoPoiItem> mPOIs = null;
     private  ListView listPOIs;
 
     @Override
@@ -41,14 +41,14 @@ public class POIListActivity extends AppCompatActivity {
     public class POIAdapter extends ArrayAdapter {
         private final int resourceId;
 
-        public POIAdapter(Context context, int textViewResourceId, List<PoiItem> objects) {
+        public POIAdapter(Context context, int textViewResourceId, List<MonoPoiItem> objects) {
             super(context, textViewResourceId, objects);
             resourceId = textViewResourceId;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            PoiItem poi = (PoiItem) getItem(position); // 获取当前项的Fruit实例
+            MonoPoiItem poi = (MonoPoiItem) getItem(position); // 获取当前项的Fruit实例
             View view = LayoutInflater.from(getContext()).inflate(resourceId, null);
             ImageView poiImage = (ImageView) view.findViewById(R.id.img_poi);
             TextView poiTitle = (TextView) view.findViewById(R.id.txt_PoiTitle);
@@ -57,9 +57,11 @@ public class POIListActivity extends AppCompatActivity {
             TextView poiOwner = (TextView) view.findViewById(R.id.txt_PoiOwner);
 
             poiImage.setImageResource(R.drawable.onsale);
-            poiTitle.setText(poi.getTitle());
-            poiPrice.setText("100福币");
-            poiDesc.setText("开张8折优惠，欢迎观临!");
+            poiTitle.setText(poi.getPoi().getTitle());
+            poiPrice.setText(new Integer(poi.getPrice()).toString()+"福币");
+            poiDesc.setText(poi.getDesc());
+            poiOwner.setText(poi.getOwner().getLogin());
+
             return view;
         }
     }
