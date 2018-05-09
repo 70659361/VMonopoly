@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -50,13 +51,15 @@ public class POIListActivity extends AppCompatActivity {
             PoiItem poi = (PoiItem) getItem(position); // 获取当前项的Fruit实例
             View view = LayoutInflater.from(getContext()).inflate(resourceId, null);
             ImageView poiImage = (ImageView) view.findViewById(R.id.img_poi);
-            TextView poiName = (TextView) view.findViewById(R.id.txt_PoiTitle);
+            TextView poiTitle = (TextView) view.findViewById(R.id.txt_PoiTitle);
             TextView poiPrice = (TextView) view.findViewById(R.id.txt_PoiPrice);
-            TextView poiDesc = (TextView) view.findViewById(R.id.txt_PoiDesc);
+            EditText poiDesc = (EditText) view.findViewById(R.id.txt_PoiDesc);
             TextView poiOwner = (TextView) view.findViewById(R.id.txt_PoiOwner);
 
             poiImage.setImageResource(R.drawable.onsale);
-            poiName.setText(poi.getTitle());//为文本视图设置文本内容
+            poiTitle.setText(poi.getTitle());
+            poiPrice.setText("100福币");
+            poiDesc.setText("开张8折优惠，欢迎观临!");
             return view;
         }
     }

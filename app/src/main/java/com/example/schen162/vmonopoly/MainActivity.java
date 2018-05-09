@@ -132,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     @Override
     public void onPoiItemSearched(PoiItem item, int rCode) {
         // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -151,7 +150,11 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     }
 
     public boolean onSearchPressed(View view) {
+        doSearchPOI();
+        return true;
+    }
 
+    private void doSearchPOI(){
         query = new PoiSearch.Query(AppConfig.SEARCH_KEYWORDS, "", AppConfig.SEARCH_CITY);
         query.setPageSize(AppConfig.SEARCH_POI_NUM);// 设置每页最多返回多少条poiitem
         query.setPageNum(AppConfig.SEARCH_POI_PAGE);// 设置查第一页
@@ -165,8 +168,6 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
                     mCurLocation.getLongitude()), AppConfig.SEARCH_RADIUS));
         }
         poiSearch.searchPOIAsyn();
-
-        return true;
     }
 
     public void onDicePressed(View view) {
@@ -185,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
         mCurLocation=aMapLocation;
 
         updateLocation();
+        doSearchPOI();
     }
 
     private void updateLocation() {
