@@ -28,6 +28,21 @@ app.get('/login/:username', function(req, res){
 	}).catch(err=>{console.log(err);});
 });
 
+app.get('/poi/:pid', function(req, res){
+	var pid=req.params.pid;
+	console.log('GET /poi/'+pid);
+	var querySQL = 'SELECT* FROM poi WHERE poiid="'+pid+'"';
+	console.log(querySQL);
+	
+	connection.query(querySQL).then(poi=>{
+		result=JSON.stringify(poi[0]);
+		res.send(result);
+	}).catch(err=>{
+		console.log(err);
+		res.send("");
+	});
+});
+	
 app.get('/coins/:username', function(req, res){
 	var loginUsr=req.params.username;
 	console.log('GET /coins/'+loginUsr);

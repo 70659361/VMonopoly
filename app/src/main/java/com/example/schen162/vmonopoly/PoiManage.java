@@ -1,7 +1,6 @@
 package com.example.schen162.vmonopoly;
 
 import android.widget.Toast;
-
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -20,9 +19,10 @@ import java.net.URL;
 public class PoiManage {
     private static PoiManage _inst;
     private String httpResponse;
+    private HttpURLConnection urlConnection;
 
     InputStream inputStream = null;
-    HttpURLConnection urlConnection = null;
+
 
     protected PoiManage (){
         httpResponse="";
@@ -33,6 +33,14 @@ public class PoiManage {
             _inst=new PoiManage();
         }
         return _inst;
+    }
+
+    public String getPOI(String pid) throws IOException{
+
+        String url = "/poi/" + pid;
+        httpGETAPICall(url);
+
+        return httpResponse;
     }
 
     public String getPOIs(String[] ids) throws IOException {
@@ -60,6 +68,14 @@ public class PoiManage {
         return true;
     }
 
+    private void httpGETAPICall(String api) throws IOException{
+        Thread _httpThread = new PoiManage.httpThread(api);
+        _httpThread.start();
+        try{
+            _httpThread.join();
+        }catch (Exception e){};
+    }
+
     private void httpPOSTAPICall(String api, String body) throws IOException {
         Thread _httpThread = new PoiManage.httpThread(api, body);
         _httpThread.start();
@@ -71,32 +87,57 @@ public class PoiManage {
     class httpThread extends Thread {
         private String _api;
         private String _body;
+        private String _method;
+
 
         public httpThread(String api, String body){
             _api=api;
             _body=body;
+            _method="POST";
         }
+
+        public httpThread(String api){
+            _api=api;
+            _body="";
+            _method="GET";
+        }
+
         public void run(){
             try {
-                URL url = new URL(AppConfig.HTTP_HOST + _api);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-                urlConnection.setRequestProperty("Accept", "application/json");
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setDoOutput(true);
-                DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
-                wr.writeBytes(_body);
-                wr.close();
-                int statusCode = urlConnection.getResponseCode();
-                if (statusCode == 200) {
-                    ByteArrayOutputStream infoStream = new ByteArrayOutputStream();
-                    inputStream = new BufferedInputStream(urlConnection.getInputStream());
-                    byte[] data = new byte[1000];
-                    int readSize = 0;
-                    while( ( readSize = inputStream.read(data)) != -1 ){
-                        infoStream.write(data,0,readSize);
+                URL url = null;
+                try {
+                    url = new URL(AppConfig.HTTP_HOST + _api);
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod(_method);
+
+                    if(_method == "GET"){
+
+                    }else{
+                        urlConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                        urlConnection.setRequestProperty("Accept", "application/json");
+                        urlConnection.setDoOutput(true);
+
+                        DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
+                        wr.writeBytes(_body);
+                        wr.close();
                     }
-                    httpResponse=infoStream.toString();
+
+                    int statusCode = urlConnection.getResponseCode();
+                    if (statusCode == 200) {
+                        ByteArrayOutputStream infoStream = new ByteArrayOutputStream();
+                        inputStream = new BufferedInputStream(urlConnection.getInputStream());
+                        byte[] data = new byte[1000];
+                        int readSize = 0;
+                        while( ( readSize = inputStream.read(data)) != -1 ){
+                            infoStream.write(data,0,readSize);
+                        }
+                        httpResponse=infoStream.toString();
+                    }else{
+                        httpResponse="";
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }catch (Exception e){
                 e.printStackTrace();

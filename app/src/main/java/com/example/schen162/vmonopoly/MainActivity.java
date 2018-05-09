@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -30,7 +29,6 @@ import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.amap.api.services.poisearch.PoiSearch.OnPoiSearchListener;
-import com.amap.api.services.routepoisearch.RoutePOISearchResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +55,10 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
 
     private Circle circle;
     private myPoiOverlay poiOverlay;
-    private int[] markers = {R.drawable.poi };
+    private int[] markers = {R.drawable.poi,
+            R.drawable.poi,R.drawable.poi,R.drawable.poi,
+            R.drawable.poi,R.drawable.poi,R.drawable.poi,
+            R.drawable.poi,R.drawable.poi,};
 
     private boolean mIsWalking=false;
 
@@ -131,23 +132,35 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     @Override
     public void onPoiItemSearched(PoiItem item, int rCode) {
         // TODO Auto-generated method stub
-
     }
 
     @Override
     public void onPoiSearched(PoiResult result, int rCode) {
-        //Intent intent = new Intent(this,POIListActivity.class);
+
         ArrayList<PoiItem> poiItems = result.getPois();
-        POIListActivity.pois = poiItems;
+
+        /*
+        ArrayList<MonoPoiItem> monoPois = new ArrayList<MonoPoiItem>();
+        for(int i=0; i<poiItems.size();i++){
+            monoPois.add(new MonoPoiItem(poiItems.get(i)));
+        }*/
+
+        POIGridActivity.pois = poiItems;
+        POIListActivity.mPOIs = poiItems;
+
+        //Intent intent = new Intent(this,POIGridActivity.class);
         //startActivity(intent);
 
         poiOverlay = new myPoiOverlay(aMap, poiItems);
         poiOverlay.addToMap();
-        poiOverlay.zoomToSpan();
     }
 
     public boolean onSearchPressed(View view) {
+        doSearchPOI();
+        return true;
+    }
 
+    private void doSearchPOI(){
         query = new PoiSearch.Query(AppConfig.SEARCH_KEYWORDS, "", AppConfig.SEARCH_CITY);
         query.setPageSize(AppConfig.SEARCH_POI_NUM);// 设置每页最多返回多少条poiitem
         query.setPageNum(AppConfig.SEARCH_POI_PAGE);// 设置查第一页
@@ -161,11 +174,14 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
                     mCurLocation.getLongitude()), AppConfig.SEARCH_RADIUS));
         }
         poiSearch.searchPOIAsyn();
-
-        return true;
     }
 
     public void onDicePressed(View view) {
+        Intent intent = new Intent(this,POIGridActivity.class);
+        startActivity(intent);
+    }
+
+    public void onListPressed(View view) {
         Intent intent = new Intent(this,POIListActivity.class);
         startActivity(intent);
     }
@@ -176,6 +192,7 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
         mCurLocation=aMapLocation;
 
         updateLocation();
+        doSearchPOI();
     }
 
     private void updateLocation() {
