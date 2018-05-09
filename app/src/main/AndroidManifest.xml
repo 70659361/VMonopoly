@@ -29,6 +29,7 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="2a592a23ffde8d1b659982dde22f3644" />
+
         <activity
             android:name=".LanuchActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -36,15 +37,17 @@
             android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".POIGridActivity" />
 
-        <activity android:name=".LoginActivity"></activity>
-        <activity android:name=".MainActivity"></activity>
+        <service android:name="com.amap.api.location.APSService" />
+
         <activity android:name=".POIListActivity"></activity>
-
-        <service android:name="com.amap.api.location.APSService"></service>
     </application>
 
 </manifest>

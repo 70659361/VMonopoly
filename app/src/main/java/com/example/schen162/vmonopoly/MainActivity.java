@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -30,7 +29,6 @@ import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.amap.api.services.poisearch.PoiSearch.OnPoiSearchListener;
-import com.amap.api.services.routepoisearch.RoutePOISearchResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +55,10 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
 
     private Circle circle;
     private myPoiOverlay poiOverlay;
-    private int[] markers = {R.drawable.poi };
+    private int[] markers = {R.drawable.poi,
+            R.drawable.poi,R.drawable.poi,R.drawable.poi,
+            R.drawable.poi,R.drawable.poi,R.drawable.poi,
+            R.drawable.poi,R.drawable.poi,};
 
     private boolean mIsWalking=false;
 
@@ -136,9 +137,12 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
 
     @Override
     public void onPoiSearched(PoiResult result, int rCode) {
-        //Intent intent = new Intent(this,POIListActivity.class);
+
         ArrayList<PoiItem> poiItems = result.getPois();
-        POIListActivity.pois = poiItems;
+        POIGridActivity.pois = poiItems;
+        POIListActivity.mPOIs = poiItems;
+
+        //Intent intent = new Intent(this,POIGridActivity.class);
         //startActivity(intent);
 
         poiOverlay = new myPoiOverlay(aMap, poiItems);
@@ -166,6 +170,11 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     }
 
     public void onDicePressed(View view) {
+        Intent intent = new Intent(this,POIGridActivity.class);
+        startActivity(intent);
+    }
+
+    public void onListPressed(View view) {
         Intent intent = new Intent(this,POIListActivity.class);
         startActivity(intent);
     }
