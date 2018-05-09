@@ -51,8 +51,9 @@ public class POIListActivity extends AppCompatActivity {
             View view = LayoutInflater.from(getContext()).inflate(resourceId, null);
             ImageView poiImage = (ImageView) view.findViewById(R.id.img_poi);
             TextView poiName = (TextView) view.findViewById(R.id.txt_PoiTitle);
-            TextView poiOwner = (TextView) view.findViewById(R.id.txt_PoiPrice);
-            TextView poiPrice = (TextView) view.findViewById(R.id.txt_PoiDesc);
+            TextView poiPrice = (TextView) view.findViewById(R.id.txt_PoiPrice);
+            TextView poiDesc = (TextView) view.findViewById(R.id.txt_PoiDesc);
+            TextView poiOwner = (TextView) view.findViewById(R.id.txt_PoiOwner);
 
             poiImage.setImageResource(R.drawable.onsale);
             poiName.setText(poi.getTitle());//为文本视图设置文本内容
