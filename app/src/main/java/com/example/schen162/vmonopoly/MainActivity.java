@@ -138,13 +138,15 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     public void onPoiSearched(PoiResult result, int rCode) {
 
         ArrayList<PoiItem> poiItems = result.getPois();
+
+        /*
         ArrayList<MonoPoiItem> monoPois = new ArrayList<MonoPoiItem>();
         for(int i=0; i<poiItems.size();i++){
             monoPois.add(new MonoPoiItem(poiItems.get(i)));
-        }
+        }*/
 
         POIGridActivity.pois = poiItems;
-        POIListActivity.mPOIs = monoPois;
+        POIListActivity.mPOIs = poiItems;
 
         //Intent intent = new Intent(this,POIGridActivity.class);
         //startActivity(intent);

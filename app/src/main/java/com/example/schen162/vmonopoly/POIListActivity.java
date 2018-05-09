@@ -21,7 +21,8 @@ import java.util.List;
 
 public class POIListActivity extends AppCompatActivity {
 
-    protected static ArrayList<MonoPoiItem> mPOIs = null;
+    protected static ArrayList<PoiItem> mPOIs = null;
+    protected static ArrayList<MonoPoiItem> mMonoPOIs = null;
     private  ListView listPOIs;
 
     @Override
@@ -31,7 +32,12 @@ public class POIListActivity extends AppCompatActivity {
 
         if(mPOIs != null) {
             listPOIs = (ListView) findViewById(R.id.list_pois);
-            POIAdapter adapter = new POIAdapter(POIListActivity.this, R.layout.list_poiitem, mPOIs);
+            mMonoPOIs = new ArrayList<MonoPoiItem>();
+            //mMonoPOIs.add(new MonoPoiItem(mPOIs.get(0)));
+            for(int i=0; i<mPOIs.size();i++){
+                mMonoPOIs.add(new MonoPoiItem(mPOIs.get(i)));
+            }
+            POIAdapter adapter = new POIAdapter(POIListActivity.this, R.layout.list_poiitem, mMonoPOIs);
             listPOIs.setAdapter(adapter);
         }else{
             Toast.makeText(getApplicationContext(), "周围没有POI", Toast.LENGTH_SHORT).show();
@@ -59,9 +65,12 @@ public class POIListActivity extends AppCompatActivity {
             poiImage.setImageResource(R.drawable.onsale);
             poiTitle.setText(poi.getPoi().getTitle());
             poiPrice.setText(new Integer(poi.getPrice()).toString()+"福币");
-            poiDesc.setText(poi.getDesc());
-            poiOwner.setText(poi.getOwner().getLogin());
-
+            try {
+                poiDesc.setText(poi.getDesc());
+                poiOwner.setText(poi.getOwner().getLogin());
+            }catch (Exception e){
+                poiOwner.setText("可购买");
+            }
             return view;
         }
     }

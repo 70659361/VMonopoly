@@ -3,6 +3,11 @@ package com.example.schen162.vmonopoly;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 /**
  * Created by SCHEN162 on 5/9/2018.
  */
@@ -15,10 +20,21 @@ public class MonoPoiItem {
 
     public MonoPoiItem(PoiItem poi) {
         mPoiItem=poi;
-        mPrice=100;
-        mDesc="快来买我！";
+        try {
+            String respObj = PoiManage.getInstance().getPOI(poi.getPoiId());
+            JSONObject poiObj = new JSONObject(respObj);
+            mPrice=poiObj.getInt("poiprice");
+            mDesc=poiObj.getString("poidesc");
 
-
+        } catch (JSONException e) {
+            e.printStackTrace();
+            mPrice=100;
+            mDesc="快来买我！";
+        } catch (IOException e) {
+            mPrice=100;
+            mDesc="快来买我！";
+            e.printStackTrace();
+        }
     }
 
     public int getPrice(){
