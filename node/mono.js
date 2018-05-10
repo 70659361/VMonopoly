@@ -2,7 +2,7 @@ var express=require('express');
 var app = express();
 var ADODB = require('node-adodb');
 const bodyParser=require('body-parser');
-const connection = ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0; Data Source=C:/workspace/03_Innovation/VMonopoly/node/monodb.mdb;');
+const connection = ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0; Data Source=./node/monodb.mdb;');
 
 
 app.get('/login/:username', function(req, res){

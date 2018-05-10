@@ -50,36 +50,14 @@
     </com.amap.api.maps2d.MapView>
 
     <Button
-        android:id="@+id/btn_search"
-        android:layout_width="395dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:layout_weight="1"
-        android:onClick="onSearchPressed"
-        android:text="周边地产"
-        app:layout_constraintTop_toBottomOf="@+id/map"
-        tools:layout_editor_absoluteX="8dp" />
-
-    <Button
         android:id="@+id/btn_dice"
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:onClick="onDicePressed"
         android:text="DICE"
-        app:layout_constraintTop_toBottomOf="@+id/btn_search"/>
+        app:layout_constraintTop_toBottomOf="@+id/map" />
 
-
-    <Button
-        android:id="@+id/btn_list"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:onClick="onListPressed"
-        android:text="POI List"
-        app:layout_constraintLeft_toRightOf="@+id/btn_dice"
-        app:layout_constraintTop_toBottomOf="@+id/btn_search" />
 
     <ImageButton
         android:id="@+id/btn_walk"
@@ -100,20 +78,31 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginStart="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btn_walk"
-        app:srcCompat="@drawable/amap_ride"
-        android:layout_marginStart="8dp" />
+        app:layout_constraintStart_toEndOf="@+id/btn_walk"
+        app:srcCompat="@drawable/amap_ride" />
 
     <ImageButton
         android:id="@+id/btn_car"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/amap_car"
-        app:layout_constraintLeft_toRightOf="@+id/btn_bike"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp" />
+        android:layout_marginLeft="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/btn_bike"
+        app:srcCompat="@drawable/amap_car" />
+
+    <TextView
+        android:id="@+id/txt_mileage"
+        android:layout_width="wrap_content"
+        android:layout_height="43dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:text="TextView"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_walk"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
