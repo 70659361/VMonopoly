@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
         boolean ret=UserManage.getInstance ().login(us);
         if(ret){
             try {
-                FileOutputStream fos = this.openFileOutput(AppConfig.HTTP_HOST, MODE_PRIVATE);
+                FileOutputStream fos = this.openFileOutput(AppConfig.USER_FILE, MODE_PRIVATE);
                 fos.write(us.getBytes());
                 fos.close();
             } catch (Exception e) {
