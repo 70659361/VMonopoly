@@ -48,7 +48,7 @@ public class POIListActivity extends AppCompatActivity {
                 }
             });
         }else{
-            Toast.makeText(getApplicationContext(), "周围没有POI", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "周围没有兴趣点", Toast.LENGTH_SHORT).show();
         }
     }
 
