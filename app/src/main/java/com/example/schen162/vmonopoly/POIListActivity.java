@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -39,12 +41,18 @@ public class POIListActivity extends AppCompatActivity {
             }
             POIAdapter adapter = new POIAdapter(POIListActivity.this, R.layout.list_poiitem, mMonoPOIs);
             listPOIs.setAdapter(adapter);
+            listPOIs.setOnItemClickListener(new ListView.OnItemClickListener(){
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Toast.makeText(getApplicationContext(),"我是item点击事件 i = " + i + "l = " + l,Toast.LENGTH_SHORT).show();
+                }
+            });
         }else{
             Toast.makeText(getApplicationContext(), "周围没有POI", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public class POIAdapter extends ArrayAdapter {
+    public class POIAdapter extends ArrayAdapter implements View.OnClickListener  {
         private final int resourceId;
 
         public POIAdapter(Context context, int textViewResourceId, List<MonoPoiItem> objects) {
@@ -61,17 +69,40 @@ public class POIListActivity extends AppCompatActivity {
             TextView poiPrice = (TextView) view.findViewById(R.id.txt_PoiPrice);
             EditText poiDesc = (EditText) view.findViewById(R.id.txt_PoiDesc);
             TextView poiOwner = (TextView) view.findViewById(R.id.txt_PoiOwner);
+            Button poiBtn1 = (Button) view.findViewById(R.id.btn_poi1);
+            Button poiBtn2 = (Button) view.findViewById(R.id.btn_poi2);
 
+            poiBtn1.setTag(R.id.btn_poi1, position);
+            poiBtn2.setTag(R.id.btn_poi2, position);
+            poiBtn1.setOnClickListener(this);
+            poiBtn2.setOnClickListener(this);
             poiImage.setImageResource(R.drawable.onsale);
             poiTitle.setText(poi.getPoi().getTitle());
             poiPrice.setText(new Integer(poi.getPrice()).toString()+"福币");
             try {
                 poiDesc.setText(poi.getDesc());
-                poiOwner.setText(poi.getOwner().getLogin());
+                poiOwner.setText("属于 ["+poi.getOwner().getLogin()+"]");
+                poiImage.setImageResource(R.drawable.sold);
             }catch (Exception e){
-                poiOwner.setText("可购买");
+                poiOwner.setText("还没有人买，赶快抢购！");
             }
             return view;
+        }
+
+        @Override
+        public void onClick(View view){
+            switch (view.getId()){
+                case R.id.btn_poi1:
+                    int pos1=(int)view.getTag(R.id.btn_poi1);
+                    Toast.makeText(getApplicationContext(), "btn1: " + new Integer(pos1).toString(), Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.btn_poi2:
+                    int pos2=(int)view.getTag(R.id.btn_poi2);
+                    Toast.makeText(getApplicationContext(), "btn2: " + new Integer(pos2).toString(), Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

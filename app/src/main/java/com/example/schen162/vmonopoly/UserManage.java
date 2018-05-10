@@ -75,6 +75,13 @@ public class UserManage {
         }catch(Exception e){}
     }
 
+    public String getUserByID(String uid){
+        String url = "/user/" + uid;
+        httpAPICall(url, "GET");
+
+        return HttpResponse;
+    }
+
     private void httpAPICall(String url, String method){
         Thread _httpThread = new httpThread(url, method);
         _httpThread.start();
@@ -112,9 +119,11 @@ public class UserManage {
                 while( ( readSize = in.read(data)) != -1 ){
                     infoStream.write(data,0,readSize);
                 }
-                jsResponse = new JSONObject(infoStream.toString());
+                HttpResponse=infoStream.toString();
+                jsResponse = new JSONObject(HttpResponse);
             }catch (Exception e) {
                 Log.d("", e.toString());
+                HttpResponse="";
                 jsResponse = null;
             }
         }

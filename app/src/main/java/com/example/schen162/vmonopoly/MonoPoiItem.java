@@ -25,14 +25,15 @@ public class MonoPoiItem {
             JSONObject poiObj = new JSONObject(respObj);
             mPrice=poiObj.getInt("poiprice");
             mDesc=poiObj.getString("poidesc");
+            mOwner=new MonoUser(poiObj.getString("poiowner"));
 
         } catch (JSONException e) {
             e.printStackTrace();
             mPrice=100;
-            mDesc="快来买我！";
+            mDesc="";
         } catch (IOException e) {
             mPrice=100;
-            mDesc="快来买我！";
+            mDesc="";
             e.printStackTrace();
         }
     }

@@ -1,5 +1,8 @@
 package com.example.schen162.vmonopoly;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by SCHEN162 on 5/9/2018.
  */
@@ -16,6 +19,17 @@ public class MonoUser {
         mPwd="";
         mNick="";
         mCoin=100;
+    }
+
+    public MonoUser(String uid){
+        String respObj = UserManage.getInstance().getUserByID(uid);
+        try {
+            JSONObject usrObj = new JSONObject(respObj);
+            mLogin=usrObj.getString("login");
+            mCoin=usrObj.getInt("coin");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getLogin(){

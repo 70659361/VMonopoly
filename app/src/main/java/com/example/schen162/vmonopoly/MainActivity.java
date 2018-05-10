@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     private int[] markers = {R.drawable.poi,
             R.drawable.poi,R.drawable.poi,R.drawable.poi,
             R.drawable.poi,R.drawable.poi,R.drawable.poi,
-            R.drawable.poi,R.drawable.poi,};
+            R.drawable.poi,R.drawable.poi};
 
     private boolean mIsWalking=false;
 
@@ -83,8 +83,8 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
             aMap = mapView.getMap();
         }
 
-        txCurCoins.setText("当前福币：" + new Integer(UserManage.getInstance().getCoins()).toString());
-        txCurUser.setText(UserManage.getInstance().getUser());
+        txCurCoins.setText("当前福币: " + new Integer(UserManage.getInstance().getCoins()).toString());
+        txCurUser.setText("欢迎: "+ UserManage.getInstance().getUser());
 
         myLocationStyle = new MyLocationStyle();
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);

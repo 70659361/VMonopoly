@@ -28,6 +28,21 @@ app.get('/login/:username', function(req, res){
 	}).catch(err=>{console.log(err);});
 });
 
+app.get('/user/:uid', function(req, res){
+	var uid=req.params.uid;
+	console.log('GET /user/'+uid);
+	var querySQL = 'SELECT* FROM users WHERE id='+uid;
+	console.log(querySQL);
+	
+	connection.query(querySQL).then(user=>{
+		result=JSON.stringify(user[0]);
+		res.send(result);
+	}).catch(err=>{
+		console.log(err);
+		res.send("");
+	});
+});
+
 app.get('/poi/:pid', function(req, res){
 	var pid=req.params.pid;
 	console.log('GET /poi/'+pid);
