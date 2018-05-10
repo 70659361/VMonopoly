@@ -29,6 +29,7 @@ import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.amap.api.services.poisearch.PoiSearch.OnPoiSearchListener;
+//import com.example.schen162.vmonopoly.util.AMapUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,16 +50,18 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     private AMapLocationClient mlocationClient;
     private AMapLocationClientOption mLocationOption;
     private AMapLocation mCurLocation;
+    private AMapLocation mStartLocation;
+    private AMapLocation mEndLocation;
 
     private static final int STROKE_COLOR = Color.argb(10,15,15,15);
     private static final int FILL_COLOR = Color.argb(10,15,15,15);
 
     private Circle circle;
     private myPoiOverlay poiOverlay;
-    private int[] markers = {R.drawable.poi,
-            R.drawable.poi,R.drawable.poi,R.drawable.poi,
-            R.drawable.poi,R.drawable.poi,R.drawable.poi,
-            R.drawable.poi,R.drawable.poi};
+    private int[] markers = {
+            R.drawable.poi_marker_1, R.drawable.poi_marker_2,R.drawable.poi_marker_3,
+            R.drawable.poi_marker_4, R.drawable.poi_marker_5,R.drawable.poi_marker_6,
+            R.drawable.poi_marker_7, R.drawable.poi_marker_8,R.drawable.poi_marker_9};
 
     private boolean mIsWalking=false;
 
@@ -156,11 +159,11 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     }
 
     public boolean onSearchPressed(View view) {
-        doSearchPOI();
+        doKeywordSearchPOI();
         return true;
     }
 
-    private void doSearchPOI(){
+    private void doKeywordSearchPOI(){
         query = new PoiSearch.Query(AppConfig.SEARCH_KEYWORDS, "", AppConfig.SEARCH_CITY);
         query.setPageSize(AppConfig.SEARCH_POI_NUM);// 设置每页最多返回多少条poiitem
         query.setPageNum(AppConfig.SEARCH_POI_PAGE);// 设置查第一页
@@ -174,6 +177,12 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
                     mCurLocation.getLongitude()), AppConfig.SEARCH_RADIUS));
         }
         poiSearch.searchPOIAsyn();
+    }
+
+    private void doRouteSearchPOI(){
+        if(null != mStartLocation && null != mEndLocation){
+
+        }
     }
 
     public void onDicePressed(View view) {
@@ -192,7 +201,6 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
         mCurLocation=aMapLocation;
 
         updateLocation();
-        doSearchPOI();
     }
 
     private void updateLocation() {
@@ -333,8 +341,17 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     private void toggleWalk(){
         if (mIsWalking){
             btnWalk.setBackgroundColor(Color.RED);
+            mEndLocation = mCurLocation;
+            doKeywordSearchPOI();
+            aMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(mEndLocation.getLongitude(), mEndLocation.getLatitude()))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.end)));
         }else {
             btnWalk.setBackgroundColor(Color.GREEN);
+            mStartLocation = mCurLocation;
+            aMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(mStartLocation.getLongitude(), mStartLocation.getLatitude()))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.start)));
         }
         mIsWalking = !mIsWalking;
     }

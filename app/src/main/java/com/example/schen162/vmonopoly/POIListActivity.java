@@ -84,7 +84,7 @@ public class POIListActivity extends AppCompatActivity {
                 poiOwner.setText("属于 ["+poi.getOwner().getLogin()+"]");
                 poiImage.setImageResource(R.drawable.sold);
             }catch (Exception e){
-                poiOwner.setText("还没有人买，赶快抢购！");
+                poiOwner.setText("待售");
             }
             return view;
         }
