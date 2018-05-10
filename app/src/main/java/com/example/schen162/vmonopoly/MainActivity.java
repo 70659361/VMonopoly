@@ -1,5 +1,6 @@
 package com.example.schen162.vmonopoly;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -15,6 +17,7 @@ import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
+import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.BitmapDescriptor;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.Circle;
@@ -24,17 +27,32 @@ import com.amap.api.maps2d.model.LatLngBounds;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.MyLocationStyle;
+import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.amap.api.services.poisearch.PoiSearch.OnPoiSearchListener;
+import com.amap.api.services.route.BusRouteResult;
+import com.amap.api.services.route.DriveRouteResult;
+import com.amap.api.services.route.RideRouteResult;
+import com.amap.api.services.route.RouteSearch;
+import com.amap.api.services.route.WalkRouteResult;
+import com.amap.api.services.routepoisearch.RoutePOISearch;
+import com.amap.api.services.routepoisearch.RoutePOISearchQuery;
+import com.amap.api.services.routepoisearch.RoutePOISearchResult;
 //import com.example.schen162.vmonopoly.util.AMapUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity implements OnPoiSearchListener, AMapLocationListener {
+import static com.amap.api.services.routepoisearch.RoutePOISearch.RoutePOISearchType.TypeGasStation;
+
+public class MainActivity extends AppCompatActivity implements
+        OnPoiSearchListener, RouteSearch.OnRouteSearchListener,
+        RoutePOISearch.OnRoutePOISearchListener,AMapLocationListener {
 
 
     private PoiSearch poiSearch;// POI搜索
@@ -52,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     private AMapLocation mCurLocation;
     private AMapLocation mStartLocation;
     private AMapLocation mEndLocation;
+    private ProgressDialog progDialog;
 
     private static final int STROKE_COLOR = Color.argb(10,15,15,15);
     private static final int FILL_COLOR = Color.argb(10,15,15,15);
@@ -60,10 +79,13 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     private myPoiOverlay poiOverlay;
     private int[] markers = {
             R.drawable.poi_marker_1, R.drawable.poi_marker_2,R.drawable.poi_marker_3,
-            R.drawable.poi_marker_4, R.drawable.poi_marker_5,R.drawable.poi_marker_6,
-            R.drawable.poi_marker_7, R.drawable.poi_marker_8,R.drawable.poi_marker_9};
+            R.drawable.poi_marker_4, R.drawable.poi_marker_5,R.drawable.poi_marker_6};
 
     private boolean mIsWalking=false;
+    private RouteSearch mRouteSearch;
+    private int mileage;
+    private TimerTask task;
+    private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,17 +164,8 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
 
         ArrayList<PoiItem> poiItems = result.getPois();
 
-        /*
-        ArrayList<MonoPoiItem> monoPois = new ArrayList<MonoPoiItem>();
-        for(int i=0; i<poiItems.size();i++){
-            monoPois.add(new MonoPoiItem(poiItems.get(i)));
-        }*/
-
         POIGridActivity.pois = poiItems;
         POIListActivity.mPOIs = poiItems;
-
-        //Intent intent = new Intent(this,POIGridActivity.class);
-        //startActivity(intent);
 
         poiOverlay = new myPoiOverlay(aMap, poiItems);
         poiOverlay.addToMap();
@@ -181,7 +194,29 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
 
     private void doRouteSearchPOI(){
         if(null != mStartLocation && null != mEndLocation){
+            mRouteSearch = new RouteSearch(this);
+            mRouteSearch.setRouteSearchListener(this);
+            int mode=0;
+            LatLonPoint mStartPoint = new LatLonPoint(mStartLocation.getLatitude(), mStartLocation.getLongitude());
+            LatLonPoint mEndPoint = new LatLonPoint(mEndLocation.getLatitude(), mEndLocation.getLongitude());
+            RoutePOISearchQuery query = new RoutePOISearchQuery(mStartPoint ,mEndPoint, mode, TypeGasStation, 250);
+            final RoutePOISearch search = new RoutePOISearch(this, query);
 
+            search.setPoiSearchListener(this);
+            search.searchRoutePOIAsyn();
+
+            /*
+            showProgressDialog();
+
+            final RouteSearch.FromAndTo fromAndTo = new RouteSearch.FromAndTo(
+                    mStartPoint, mEndPoint);
+            RouteSearch.WalkRouteQuery query = new RouteSearch.WalkRouteQuery(fromAndTo);
+            try {
+                mRouteSearch.calculateWalkRoute(query);
+            } catch (AMapException e) {
+                e.printStackTrace();
+            }
+            */
         }
     }
 
@@ -214,6 +249,31 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
         }
     }
 
+    @Override
+    public void onBusRouteSearched(BusRouteResult busRouteResult, int i) {
+
+    }
+
+    @Override
+    public void onDriveRouteSearched(DriveRouteResult driveRouteResult, int i) {
+
+    }
+
+    @Override
+    public void onWalkRouteSearched(WalkRouteResult walkRouteResult, int i) {
+
+    }
+
+    @Override
+    public void onRideRouteSearched(RideRouteResult rideRouteResult, int i) {
+
+    }
+
+    @Override
+    public void onRoutePoiSearched(RoutePOISearchResult routePOISearchResult, int i) {
+
+    }
+
     private class myPoiOverlay {
         private AMap mamap;
         private List<PoiItem> mPois;
@@ -236,21 +296,12 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
             }
         }
 
-        /**
-         * 去掉PoiOverlay上所有的Marker。
-         *
-         * @since V2.1.0
-         */
         public void removeFromMap() {
             for (Marker mark : mPoiMarks) {
                 mark.remove();
             }
         }
 
-        /**
-         * 移动镜头到当前的视角。
-         * @since V2.1.0
-         */
         public void zoomToSpan() {
             if (mPois != null && mPois.size() > 0) {
                 if (mamap == null)
@@ -290,13 +341,6 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
             return mPois.get(index).getSnippet();
         }
 
-        /**
-         * 从marker中得到poi在list的位置。
-         *
-         * @param marker 一个标记的对象。
-         * @return 返回该marker对应的poi在list的位置。
-         * @since V2.1.0
-         */
         public int getPoiIndex(Marker marker) {
             for (int i = 0; i < mPoiMarks.size(); i++) {
                 if (mPoiMarks.get(i).equals(marker)) {
@@ -306,12 +350,6 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
             return -1;
         }
 
-        /**
-         * 返回第index的poi的信息。
-         * @param index 第几个poi。
-         * @return poi的信息。poi对象详见搜索服务模块的基础核心包（com.amap.api.services.core）中的类 <strong><a href="../../../../../../Search/com/amap/api/services/core/PoiItem.html" title="com.amap.api.services.core中的类">PoiItem</a></strong>。
-         * @since V2.1.0
-         */
         public PoiItem getPoiItem(int index) {
             if (index < 0 || index >= mPois.size()) {
                 return null;
@@ -341,16 +379,17 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
         if (mIsWalking){
             btnWalk.setBackgroundColor(Color.RED);
             mEndLocation = mCurLocation;
-            //doKeywordSearchPOI();
-            //aMap.clear();
-            double lat = mStartLocation.getLatitude();
-            double lon = mStartLocation.getLongitude();
 
-            MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory
-                    .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                    .position(new LatLng(lat, lon)).title("终点")
+            double lat = mEndLocation.getLatitude();
+            double lon = mEndLocation.getLongitude();
+
+            MarkerOptions markerOption = new MarkerOptions()
+                    .position(new LatLng(lat, lon)).title(mEndLocation.getPoiName())
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.amap_end));
             aMap.addMarker(markerOption);
+
+            stopEarnCoin();
+
         }else {
             btnWalk.setBackgroundColor(Color.GREEN);
             mStartLocation = mCurLocation;
@@ -359,12 +398,49 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
             double lat = mStartLocation.getLatitude();
             double lon = mStartLocation.getLongitude();
 
-            MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory
-                    .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                    .position(new LatLng(lat, lon)).title("起点")
+            MarkerOptions markerOption = new MarkerOptions()
+                    .position(new LatLng(lat, lon)).title(mStartLocation.getPoiName())
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.amap_start));
             aMap.addMarker(markerOption);
+
+            startEarnCoin();
         }
         mIsWalking = !mIsWalking;
+    }
+
+    private void showProgressDialog() {
+        if (progDialog == null)
+            progDialog = new ProgressDialog(this);
+        progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progDialog.setIndeterminate(false);
+        progDialog.setCancelable(true);
+        progDialog.setMessage("正在搜索");
+        progDialog.show();
+    }
+
+    private void dissmissProgressDialog() {
+        if (progDialog != null) {
+            progDialog.dismiss();
+        }
+    }
+
+    private void startEarnCoin(){
+        timer = new Timer();
+        mileage=0;
+        task = new TimerTask() {
+            public void run() {
+                mileage++;
+            }
+        };
+        timer.schedule(task, 1000, 1000);
+    }
+
+    private void stopEarnCoin(){
+        timer.cancel();
+        int newCoins=UserManage.getInstance().getCoins()+mileage;
+        UserManage.getInstance().updateCoins(newCoins);
+
+        Toast.makeText(this, "恭喜获得"+new Integer(mileage).toString()+"福币", Toast.LENGTH_SHORT).show();
+        txCurCoins.setText(new Integer(newCoins).toString());
     }
 }

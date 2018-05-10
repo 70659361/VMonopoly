@@ -84,10 +84,11 @@ app.post('/coins/:username/:coins', function(req, res){
 	var newCoins=req.params.coins;
 	console.log('POST /coins/'+loginUsr);
 	
-	var querySQL = 'UPDATE user SET coin=' +newCoins+ ' WHERE login="'+loginUsr+'"';
+	var querySQL = 'UPDATE users SET coin=' +newCoins+ ' WHERE login="'+loginUsr+'"';
 	console.log(querySQL);
 	
-	connection.execute(querySQL);
+	connection.execute(querySQL).catch(err=>{console.log(err);});
+
 	res.send("OKs");
 
 });

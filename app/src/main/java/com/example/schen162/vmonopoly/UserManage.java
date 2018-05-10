@@ -72,7 +72,9 @@ public class UserManage {
         try {
             httpAPICall("/coins/"+UserName+"/"+Integer.toString(coins), "POST");
             UserConins = coins;
-        }catch(Exception e){}
+        }catch(Exception e){
+
+        }
     }
 
     public String getUserByID(String uid){
