@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     }
 
     public boolean onSearchPressed(View view) {
-        doKeywordSearchPOI();
+        //doKeywordSearchPOI();
         return true;
     }
 
@@ -199,7 +199,6 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
     public void onLocationChanged(AMapLocation aMapLocation) {
         if(null != circle){ circle.remove();}
         mCurLocation=aMapLocation;
-
         updateLocation();
     }
 
@@ -342,16 +341,29 @@ public class MainActivity extends AppCompatActivity implements OnPoiSearchListen
         if (mIsWalking){
             btnWalk.setBackgroundColor(Color.RED);
             mEndLocation = mCurLocation;
-            doKeywordSearchPOI();
-            aMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(mEndLocation.getLongitude(), mEndLocation.getLatitude()))
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.end)));
+            //doKeywordSearchPOI();
+            //aMap.clear();
+            double lat = mStartLocation.getLatitude();
+            double lon = mStartLocation.getLongitude();
+
+            MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory
+                    .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                    .position(new LatLng(lat, lon)).title("终点")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.amap_end));
+            aMap.addMarker(markerOption);
         }else {
             btnWalk.setBackgroundColor(Color.GREEN);
             mStartLocation = mCurLocation;
-            aMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(mStartLocation.getLongitude(), mStartLocation.getLatitude()))
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.start)));
+            aMap.clear();
+
+            double lat = mStartLocation.getLatitude();
+            double lon = mStartLocation.getLongitude();
+
+            MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory
+                    .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                    .position(new LatLng(lat, lon)).title("起点")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.amap_start));
+            aMap.addMarker(markerOption);
         }
         mIsWalking = !mIsWalking;
     }
