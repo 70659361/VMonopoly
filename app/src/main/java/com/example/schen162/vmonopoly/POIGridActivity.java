@@ -126,7 +126,7 @@ public class POIGridActivity extends AppCompatActivity implements AdapterView.On
                     if(inPrice > UserManage.getInstance().getCoins()){
                         Toast.makeText(getApplicationContext(), "对不起，您的福币不够。", Toast.LENGTH_SHORT).show();
                     }else{
-                        if(true == PoiManage.getInstance().buyPOI(UserManage.getInstance().getUser(), ids[position], stPrice)){
+                        if(true == PoiManage.getInstance().buyPOI(UserManage.getInstance().getUser(), ids[position], inPrice)){
                             Toast.makeText(getApplicationContext(), "购买成功！", Toast.LENGTH_SHORT).show();
                         }
                     }

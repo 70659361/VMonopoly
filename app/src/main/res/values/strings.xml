@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">VMonopoly</string>
+    <string name="app_name">XMonopoly</string>
 
-    <string name="title_activity_lanuch">LanuchActivity</string>
+    <string name="title_activity_lanuch">XMonopoly</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

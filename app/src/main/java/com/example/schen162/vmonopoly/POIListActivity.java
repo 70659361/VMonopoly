@@ -1,6 +1,8 @@
 package com.example.schen162.vmonopoly;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,7 +38,8 @@ public class POIListActivity extends AppCompatActivity {
             listPOIs = (ListView) findViewById(R.id.list_pois);
             mMonoPOIs = new ArrayList<MonoPoiItem>();
             //mMonoPOIs.add(new MonoPoiItem(mPOIs.get(0)));
-            for(int i=0; i<mPOIs.size();i++){
+            int j = Math.min(mPOIs.size(), 3);
+            for(int i=0; i<j;i++){
                 mMonoPOIs.add(new MonoPoiItem(mPOIs.get(i)));
             }
             POIAdapter adapter = new POIAdapter(POIListActivity.this, R.layout.list_poiitem, mMonoPOIs);
@@ -48,7 +51,7 @@ public class POIListActivity extends AppCompatActivity {
                 }
             });
         }else{
-            Toast.makeText(getApplicationContext(), "周围没有POI", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "周围没有兴趣点", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -93,9 +96,14 @@ public class POIListActivity extends AppCompatActivity {
         public void onClick(View view){
             switch (view.getId()){
                 case R.id.btn_poi1:
-                    int pos1=(int)view.getTag(R.id.btn_poi1);
-                    Toast.makeText(getApplicationContext(), "btn1: " + new Integer(pos1).toString(), Toast.LENGTH_SHORT).show();
+                    final int pos1=(int)view.getTag(R.id.btn_poi1);
+                    //Toast.makeText(getApplicationContext(), "btn1: " + new Integer(pos1).toString(), Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                    builder.setMessage("您想购买此地吗？");
+                    AlertDialog alert = builder.create();
+                    alert.show();
                     break;
+
                 case R.id.btn_poi2:
                     int pos2=(int)view.getTag(R.id.btn_poi2);
                     Toast.makeText(getApplicationContext(), "btn2: " + new Integer(pos2).toString(), Toast.LENGTH_SHORT).show();

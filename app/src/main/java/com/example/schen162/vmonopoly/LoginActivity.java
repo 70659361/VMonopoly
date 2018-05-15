@@ -25,6 +25,7 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
     private EditText txUsername;
     private EditText txPwd;
     private EditText txHost;
+    private EditText txKeyword;
     private Button btnLogin;
 
 
@@ -36,11 +37,13 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
         txUsername = (EditText) findViewById(R.id.txt_username);
         txPwd = (EditText) findViewById(R.id.txt_pwd);
         txHost = (EditText) findViewById(R.id.txt_host);
+        txKeyword = (EditText) findViewById(R.id.txt_keywords);
         btnLogin = (Button) findViewById(R.id.btn_login);
 
         txUsername.setHint("输入用户名");
         txPwd.setHint("输入密码");
         txHost.setText(AppConfig.HTTP_HOST);
+        txKeyword.setText(AppConfig.SEARCH_KEYWORDS);
 
         try {
             FileInputStream uf = openFileInput(AppConfig.USER_FILE);
@@ -56,6 +59,7 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
         }
 
         txHost.addTextChangedListener(this);
+        txKeyword.addTextChangedListener(this);
     }
 
     @Override
@@ -81,7 +85,7 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
         boolean ret=UserManage.getInstance ().login(us);
         if(ret){
             try {
-                FileOutputStream fos = this.openFileOutput(AppConfig.HTTP_HOST, MODE_PRIVATE);
+                FileOutputStream fos = this.openFileOutput(AppConfig.USER_FILE, MODE_PRIVATE);
                 fos.write(us.getBytes());
                 fos.close();
             } catch (Exception e) {
@@ -95,8 +99,12 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable editable) {
-        String newHost = editable.toString();
-        AppConfig.setHttpHost(newHost);
+        String newText = editable.toString();
+        if(newText.substring(0) == "h" ){
+            AppConfig.setHttpHost(newText);
+        }else {
+            AppConfig.SEARCH_KEYWORDS = newText;
+        }
     }
 
     @Override

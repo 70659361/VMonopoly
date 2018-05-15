@@ -56,10 +56,10 @@ public class PoiManage {
         return httpResponse;
     }
 
-    public boolean buyPOI(String user, String poiid, String price){
+    public boolean buyPOI(String user, String poiid, int price){
 
         try {
-            String api="/buy/"+user+"/"+poiid+"/"+price;
+            String api="/buy/"+user+"/"+poiid+"/"+new Integer(price).toString();
             httpPOSTAPICall(api, "{}");
         } catch (IOException e) {
             e.printStackTrace();

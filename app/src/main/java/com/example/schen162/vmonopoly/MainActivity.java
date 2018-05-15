@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements
     private TextView txCurLoc;
     private TextView txCurUser;
     private TextView txCurCoins;
+    private TextView txCurMileage;
     private ImageButton btnWalk;
 
     private com.amap.api.maps2d.MapView mapView;
@@ -98,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements
         txCurLoc = (TextView) findViewById(R.id.txt_curLocation);
         txCurCoins = (TextView) findViewById(R.id.txt_curCoins);
         txCurUser = (TextView) findViewById(R.id.txt_curUser);
+        txCurMileage = (TextView) findViewById(R.id.txt_mileage);
         btnWalk = (ImageButton) findViewById(R.id.btn_walk);
 
         init();
@@ -110,6 +114,8 @@ public class MainActivity extends AppCompatActivity implements
 
         txCurCoins.setText("当前福币: " + new Integer(UserManage.getInstance().getCoins()).toString());
         txCurUser.setText("欢迎: "+ UserManage.getInstance().getUser());
+        txCurLoc.setHint("正在获取当前位置...");
+        txCurMileage.setText("0");
 
         myLocationStyle = new MyLocationStyle();
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);
@@ -161,19 +167,15 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onPoiSearched(PoiResult result, int rCode) {
+        if(result != null) {
+            ArrayList<PoiItem> poiItems = result.getPois();
+            POIListActivity.mPOIs = poiItems;
 
-        ArrayList<PoiItem> poiItems = result.getPois();
-
-        POIGridActivity.pois = poiItems;
-        POIListActivity.mPOIs = poiItems;
-
-        poiOverlay = new myPoiOverlay(aMap, poiItems);
-        poiOverlay.addToMap();
-    }
-
-    public boolean onSearchPressed(View view) {
-        //doKeywordSearchPOI();
-        return true;
+            poiOverlay = new myPoiOverlay(aMap, poiItems);
+            poiOverlay.addToMap();
+        }else {
+            Toast.makeText(getApplicationContext(), "周围没有兴趣点", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void doKeywordSearchPOI(){
@@ -221,11 +223,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void onDicePressed(View view) {
-        Intent intent = new Intent(this,POIGridActivity.class);
-        startActivity(intent);
-    }
-
-    public void onListPressed(View view) {
         Intent intent = new Intent(this,POIListActivity.class);
         startActivity(intent);
     }
@@ -240,7 +237,6 @@ public class MainActivity extends AppCompatActivity implements
     private void updateLocation() {
         if(null != mCurLocation){
             txCurLoc.setText("当前位置："+mCurLocation.getPoiName());
-
             LatLng latlong = new LatLng(mCurLocation.getLatitude(), mCurLocation.getLongitude());
             circle = aMap.addCircle(new CircleOptions().center(latlong).radius(AppConfig.SEARCH_RADIUS).strokeColor(STROKE_COLOR)
                     .fillColor(FILL_COLOR).strokeWidth(25));
@@ -358,13 +354,13 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         protected BitmapDescriptor getBitmapDescriptor(int arg0) {
-            if (arg0 < 10) {
+            if (arg0 < 6) {
                 BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(
                         BitmapFactory.decodeResource(getResources(), markers[arg0]));
                 return icon;
             }else {
                 BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(
-                        BitmapFactory.decodeResource(getResources(), R.drawable.onsale));
+                        BitmapFactory.decodeResource(getResources(), R.drawable.poi_marker_pressed));
                 return icon;
             }
         }
@@ -430,6 +426,9 @@ public class MainActivity extends AppCompatActivity implements
         task = new TimerTask() {
             public void run() {
                 mileage++;
+                Message msg = new Message();
+                msg.what=1;
+                mainHandler.sendMessage(msg);
             }
         };
         timer.schedule(task, 1000, 1000);
@@ -441,6 +440,19 @@ public class MainActivity extends AppCompatActivity implements
         UserManage.getInstance().updateCoins(newCoins);
 
         Toast.makeText(this, "恭喜获得"+new Integer(mileage).toString()+"福币", Toast.LENGTH_SHORT).show();
-        txCurCoins.setText(new Integer(newCoins).toString());
+        txCurCoins.setText(new Integer(newCoins).toString()+"福币");
+
+        doKeywordSearchPOI();
     }
+
+    private Handler mainHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    txCurMileage.setText(new Integer(mileage).toString());
+                    break;
+            }
+        }
+    };
 }
