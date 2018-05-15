@@ -57,7 +57,7 @@ public class POIListActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "周围没有兴趣点", Toast.LENGTH_SHORT).show();
         }
 
-        txtCurCoins.setText("当前福币： "UserManage.getInstance().getCoins());
+        txtCurCoins.setText("当前福币： "+UserManage.getInstance().getCoins());
     }
 
     public class POIAdapter extends ArrayAdapter implements View.OnClickListener  {

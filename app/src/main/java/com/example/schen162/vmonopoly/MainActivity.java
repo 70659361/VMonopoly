@@ -1,6 +1,8 @@
 package com.example.schen162.vmonopoly;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -385,7 +387,6 @@ public class MainActivity extends AppCompatActivity implements
             aMap.addMarker(markerOption);
 
             stopEarnCoin();
-
         }else {
             btnWalk.setBackgroundColor(Color.GREEN);
             mStartLocation = mCurLocation;
@@ -432,6 +433,8 @@ public class MainActivity extends AppCompatActivity implements
             }
         };
         timer.schedule(task, 1000, 1000);
+
+        Toast.makeText(getApplicationContext(),"本次行程开始", Toast.LENGTH_LONG).show();
     }
 
     private void stopEarnCoin(){
@@ -443,6 +446,16 @@ public class MainActivity extends AppCompatActivity implements
         txCurCoins.setText(new Integer(newCoins).toString()+"福币");
 
         doKeywordSearchPOI();
+
+        AlertDialog.Builder adInfo=new AlertDialog.Builder(this);
+        //adInfo.setTitle("简单对话框");
+        adInfo.setMessage("本次行程结束，获取周边地产...");
+        adInfo.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        adInfo.create().show();
     }
 
     private Handler mainHandler = new Handler() {
