@@ -12,8 +12,10 @@
     <com.amap.api.maps2d.MapView
         android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </com.amap.api.maps2d.MapView>
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="120dp"
+    />
 
     <TextView
         android:id="@+id/txt_curUser"
@@ -22,7 +24,7 @@
         android:textSize="30sp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        />
+    />
 
     <TextView
         android:id="@+id/txt_curCoins"
@@ -31,14 +33,15 @@
         android:textSize="30sp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        />
+    />
 
     <TextView
         android:id="@+id/txt_curLocation"
         android:layout_width="395dp"
         android:layout_height="40dp"
         android:layout_above="@+id/btn_dice"
-        />
+        android:layout_centerHorizontal="true"
+    />
 
     <Button
         android:id="@+id/btn_dice"
@@ -47,7 +50,7 @@
         android:onClick="onDicePressed"
         android:text="DICE"
         android:layout_centerInParent="true"
-        />
+    />
 
 
     <ImageButton
@@ -57,7 +60,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:onClick="onWalkPressed"
-        app:srcCompat="@drawable/amap_man" />
+        app:srcCompat="@drawable/amap_man"
+    />
 
     <ImageButton
         android:id="@+id/btn_bike"
@@ -65,7 +69,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        app:srcCompat="@drawable/amap_ride" />
+        app:srcCompat="@drawable/amap_ride"
+    />
 
     <ImageButton
         android:id="@+id/btn_car"
@@ -74,13 +79,14 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         app:srcCompat="@drawable/amap_car"
-        />
+     />
 
     <TextView
         android:id="@+id/txt_mileage"
         android:layout_width="80dp"
         android:layout_height="40dp"
         android:layout_above="@+id/btn_walk"
-        />
+        android:text="0"
+        android:textSize="30sp" />
 
 </RelativeLayout>
