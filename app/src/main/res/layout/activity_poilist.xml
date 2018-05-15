@@ -7,15 +7,15 @@
     tools:context="com.example.schen162.vmonopoly.POIListActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/txt_poilist_coins"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="8dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/list_pois"

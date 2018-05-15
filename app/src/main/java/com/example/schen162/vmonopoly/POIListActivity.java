@@ -28,11 +28,14 @@ public class POIListActivity extends AppCompatActivity {
     protected static ArrayList<PoiItem> mPOIs = null;
     protected static ArrayList<MonoPoiItem> mMonoPOIs = null;
     private  ListView listPOIs;
+    private  TextView txtCurCoins;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_poilist);
+
+        txtCurCoins = (TextView) findViewById(R.id.txt_poilist_coins);
 
         if(mPOIs != null) {
             listPOIs = (ListView) findViewById(R.id.list_pois);
@@ -53,6 +56,8 @@ public class POIListActivity extends AppCompatActivity {
         }else{
             Toast.makeText(getApplicationContext(), "周围没有兴趣点", Toast.LENGTH_SHORT).show();
         }
+
+        txtCurCoins.setText("当前福币： "UserManage.getInstance().getCoins());
     }
 
     public class POIAdapter extends ArrayAdapter implements View.OnClickListener  {
@@ -98,10 +103,7 @@ public class POIListActivity extends AppCompatActivity {
                 case R.id.btn_poi1:
                     final int pos1=(int)view.getTag(R.id.btn_poi1);
                     //Toast.makeText(getApplicationContext(), "btn1: " + new Integer(pos1).toString(), Toast.LENGTH_SHORT).show();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-                    builder.setMessage("您想购买此地吗？");
-                    AlertDialog alert = builder.create();
-                    alert.show();
+                    openDialog(pos1);
                     break;
 
                 case R.id.btn_poi2:
@@ -112,5 +114,35 @@ public class POIListActivity extends AppCompatActivity {
                     break;
             }
         }
+    }
+
+    private void openDialog(final int pos){
+        AlertDialog.Builder adInfo=new AlertDialog.Builder(this);
+        //adInfo.setTitle("简单对话框");
+        adInfo.setMessage("您想购买此地吗");
+        adInfo.setIcon(R.drawable.onsale);
+        adInfo.setPositiveButton("是", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int inPrice=mMonoPOIs.get(pos).getPrice();
+                if(inPrice > UserManage.getInstance().getCoins()){
+                    Toast.makeText(getApplicationContext(), "对不起，您的福币不够。", Toast.LENGTH_SHORT).show();
+                }else{
+                    if(true == PoiManage.getInstance().buyPOI(
+                            UserManage.getInstance().getUser(), mMonoPOIs.get(pos).getPoi().getPoiId(), inPrice)){
+                        Toast.makeText(getApplicationContext(), "购买成功！", Toast.LENGTH_SHORT).show();
+                    }
+                }                // 根据实际情况编写相应代码。
+            }
+        });
+        //为“取消”按钮注册监听事件
+        adInfo.setNegativeButton("否", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // 根据实际情况编写相应代码。
+            }
+        });
+        adInfo.create();
+        adInfo.show();
     }
 }

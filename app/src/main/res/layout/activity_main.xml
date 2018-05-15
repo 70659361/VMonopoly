@@ -45,11 +45,12 @@
 
     <Button
         android:id="@+id/btn_dice"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="onDicePressed"
         android:text="DICE"
         android:layout_centerInParent="true"
+        android:layout_above="@+id/btn_bike"
     />
 
 
@@ -85,7 +86,8 @@
         android:id="@+id/txt_mileage"
         android:layout_width="80dp"
         android:layout_height="40dp"
-        android:layout_above="@+id/btn_walk"
+        android:layout_toRightOf="@+id/btn_walk"
+        android:layout_alignBottom="@+id/btn_walk"
         android:text="0"
         android:textSize="30sp" />
 
