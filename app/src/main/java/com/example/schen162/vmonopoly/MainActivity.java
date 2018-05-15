@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements
     private TextView txCurCoins;
     private TextView txCurMileage;
     private ImageButton btnWalk;
+    private AlertDialog mDialog;
 
     private com.amap.api.maps2d.MapView mapView;
     private com.amap.api.maps2d.AMap aMap;
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements
     private int[] markers = {
             R.drawable.poi_marker_1, R.drawable.poi_marker_2,R.drawable.poi_marker_3,
             R.drawable.poi_marker_4, R.drawable.poi_marker_5,R.drawable.poi_marker_6};
+    private ArrayList<PoiItem> mPoiItems;
 
     private boolean mIsWalking=false;
     private RouteSearch mRouteSearch;
@@ -170,11 +172,29 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onPoiSearched(PoiResult result, int rCode) {
         if(result != null) {
-            ArrayList<PoiItem> poiItems = result.getPois();
-            POIListActivity.mPOIs = poiItems;
+            mPoiItems = result.getPois();
+            POIListActivity.mPOIs = mPoiItems;
 
-            poiOverlay = new myPoiOverlay(aMap, poiItems);
+            poiOverlay = new myPoiOverlay(aMap, mPoiItems);
             poiOverlay.addToMap();
+
+            mDialog.cancel();
+            AlertDialog.Builder adInfo = new AlertDialog.Builder(this);
+            int numPois = mPoiItems.size();
+            adInfo.setMessage("发现周边" + new Integer(numPois).toString() + "处地产");
+            adInfo.setPositiveButton("DICE", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(getApplicationContext(),POIListActivity.class);
+                    startActivity(intent);
+                }
+            });
+            adInfo.setNegativeButton("放弃", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            adInfo.create().show();
         }else {
             Toast.makeText(getApplicationContext(), "周围没有兴趣点", Toast.LENGTH_SHORT).show();
         }
@@ -449,13 +469,10 @@ public class MainActivity extends AppCompatActivity implements
 
         AlertDialog.Builder adInfo=new AlertDialog.Builder(this);
         //adInfo.setTitle("简单对话框");
+
         adInfo.setMessage("本次行程结束，获取周边地产...");
-        adInfo.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-        adInfo.create().show();
+        mDialog = adInfo.create();
+        mDialog.show();
     }
 
     private Handler mainHandler = new Handler() {
