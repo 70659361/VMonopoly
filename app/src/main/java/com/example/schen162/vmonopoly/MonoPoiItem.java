@@ -2,6 +2,7 @@ package com.example.schen162.vmonopoly;
 
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
+import com.amap.api.services.poisearch.PoiSearch;
 
 import org.json.JSONException;
 import org.json.JSONObject;

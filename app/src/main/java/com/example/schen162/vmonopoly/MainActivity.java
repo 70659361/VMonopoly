@@ -47,6 +47,10 @@ import com.amap.api.services.routepoisearch.RoutePOISearchQuery;
 import com.amap.api.services.routepoisearch.RoutePOISearchResult;
 //import com.example.schen162.vmonopoly.util.AMapUtil;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -115,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements
         if (aMap == null) {
             aMap = mapView.getMap();
         }
+        mDialog = null;
 
         txCurCoins.setText("当前福币: " + new Integer(UserManage.getInstance().getCoins()).toString());
         txCurUser.setText("欢迎: "+ UserManage.getInstance().getUser());
@@ -166,7 +171,14 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onPoiItemSearched(PoiItem item, int rCode) {
-        // TODO Auto-generated method stub
+        if(null != item) {
+            double lat = item.getLatLonPoint().getLatitude();
+            double lon = item.getLatLonPoint().getLongitude();
+            MarkerOptions markerOption = new MarkerOptions()
+                    .position(new LatLng(lat, lon)).title(item.getTitle())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.mypoi));
+            aMap.addMarker(markerOption);
+        }
     }
 
     @Override
@@ -179,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements
             poiOverlay.addToMap();
 
             mDialog.cancel();
+
             AlertDialog.Builder adInfo = new AlertDialog.Builder(this);
             int numPois = mPoiItems.size();
             adInfo.setMessage("发现周边" + new Integer(numPois).toString() + "处地产");
@@ -194,7 +207,8 @@ public class MainActivity extends AppCompatActivity implements
                 public void onClick(DialogInterface dialog, int which) {
                 }
             });
-            adInfo.create().show();
+            mDialog=adInfo.create();
+            mDialog.show();
         }else {
             Toast.makeText(getApplicationContext(), "周围没有兴趣点", Toast.LENGTH_SHORT).show();
         }
@@ -244,9 +258,24 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public void onDicePressed(View view) {
-        Intent intent = new Intent(this,POIListActivity.class);
-        startActivity(intent);
+    public void onMypoiPressed(View view) {
+        int userid = UserManage.getInstance().getUserID();
+        String jsObj = PoiManage.getInstance().getPOIbyUser(userid);
+        Toast.makeText(getApplicationContext(), jsObj, Toast.LENGTH_LONG).show();
+
+        try {
+            JSONArray jsResp = new JSONArray(jsObj);
+            for(int i=0; i<jsResp.length();i++) {
+                JSONObject poiObj = jsResp.getJSONObject(i);
+                String poiid=poiObj.getString("poiid");
+                PoiSearch poiSearch = new PoiSearch(this, null);
+                poiSearch.setOnPoiSearchListener(this);
+                poiSearch.searchPOIIdAsyn(poiid);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

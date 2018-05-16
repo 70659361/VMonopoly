@@ -1,8 +1,11 @@
 package com.example.schen162.vmonopoly;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,8 +30,9 @@ public class POIListActivity extends AppCompatActivity {
 
     protected static ArrayList<PoiItem> mPOIs = null;
     protected static ArrayList<MonoPoiItem> mMonoPOIs = null;
-    private  ListView listPOIs;
-    private  TextView txtCurCoins;
+    private ListView listPOIs;
+    private TextView txtCurCoins;
+    private ProgressDialog progDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,28 +40,11 @@ public class POIListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_poilist);
 
         txtCurCoins = (TextView) findViewById(R.id.txt_poilist_coins);
-
-        if(mPOIs != null) {
-            listPOIs = (ListView) findViewById(R.id.list_pois);
-            mMonoPOIs = new ArrayList<MonoPoiItem>();
-            //mMonoPOIs.add(new MonoPoiItem(mPOIs.get(0)));
-            int j = Math.min(mPOIs.size(), 3);
-            for(int i=0; i<j;i++){
-                mMonoPOIs.add(new MonoPoiItem(mPOIs.get(i)));
-            }
-            POIAdapter adapter = new POIAdapter(POIListActivity.this, R.layout.list_poiitem, mMonoPOIs);
-            listPOIs.setAdapter(adapter);
-            listPOIs.setOnItemClickListener(new ListView.OnItemClickListener(){
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Toast.makeText(getApplicationContext(),"我是item点击事件 i = " + i + "l = " + l,Toast.LENGTH_SHORT).show();
-                }
-            });
-        }else{
-            Toast.makeText(getApplicationContext(), "周围没有兴趣点", Toast.LENGTH_SHORT).show();
-        }
-
         txtCurCoins.setText("当前福币： "+UserManage.getInstance().getCoins());
+
+        showProgressDialog();
+        showPOIs();
+        dissmissProgressDialog();
     }
 
     public class POIAdapter extends ArrayAdapter implements View.OnClickListener  {
@@ -144,5 +131,53 @@ public class POIListActivity extends AppCompatActivity {
         });
         adInfo.create();
         adInfo.show();
+    }
+
+    private void showProgressDialog() {
+        if (progDialog == null)
+            progDialog = new ProgressDialog(this);
+        progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progDialog.setIndeterminate(false);
+        progDialog.setCancelable(true);
+        progDialog.setMessage("加载中...");
+        progDialog.show();
+    }
+
+    private void dissmissProgressDialog() {
+        if (progDialog != null) {
+            progDialog.dismiss();
+        }
+    }
+
+    private Handler poiHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    showPOIs();
+                    break;
+            }
+        }
+    };
+
+    private void showPOIs(){
+        if(mPOIs != null) {
+            listPOIs = (ListView) findViewById(R.id.list_pois);
+            mMonoPOIs = new ArrayList<MonoPoiItem>();
+            int j = Math.min(mPOIs.size(), 3);
+            for(int i=0; i<j;i++){
+                mMonoPOIs.add(new MonoPoiItem(mPOIs.get(i)));
+            }
+            POIAdapter adapter = new POIAdapter(POIListActivity.this, R.layout.list_poiitem, mMonoPOIs);
+            listPOIs.setAdapter(adapter);
+            listPOIs.setOnItemClickListener(new ListView.OnItemClickListener(){
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    //Toast.makeText(getApplicationContext(),"我是item点击事件 i = " + i + "l = " + l,Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else{
+            Toast.makeText(getApplicationContext(), "周围没有兴趣点", Toast.LENGTH_SHORT).show();
+        }
     }
 }

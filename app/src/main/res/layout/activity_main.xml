@@ -39,19 +39,18 @@
         android:id="@+id/txt_curLocation"
         android:layout_width="395dp"
         android:layout_height="40dp"
-        android:layout_above="@+id/btn_dice"
+        android:layout_above="@+id/btn_mypoi"
         android:layout_centerHorizontal="true"
     />
 
     <Button
-        android:id="@+id/btn_dice"
+        android:id="@+id/btn_mypoi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="onDicePressed"
-        android:text="DICE"
-        android:layout_centerInParent="true"
         android:layout_above="@+id/btn_bike"
-    />
+        android:layout_centerInParent="true"
+        android:onClick="onMypoiPressed"
+        android:text="我的地产" />
 
 
     <ImageButton

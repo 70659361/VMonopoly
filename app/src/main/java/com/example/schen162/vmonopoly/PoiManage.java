@@ -1,6 +1,12 @@
 package com.example.schen162.vmonopoly;
 
+import android.content.Context;
 import android.widget.Toast;
+
+import com.amap.api.services.core.PoiItem;
+import com.amap.api.services.poisearch.PoiResult;
+import com.amap.api.services.poisearch.PoiSearch;
+
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -43,6 +49,7 @@ public class PoiManage {
         return httpResponse;
     }
 
+
     public String getPOIs(String[] ids) throws IOException {
 
         String jsObj = "{\"id\":[";
@@ -66,6 +73,18 @@ public class PoiManage {
         }
 
         return true;
+    }
+
+    public String getPOIbyUser(int userid){
+        httpResponse="";
+        try {
+            String api="/pois/"+ new Integer(userid).toString();
+            httpGETAPICall(api);
+
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return httpResponse;
     }
 
     private void httpGETAPICall(String api) throws IOException{

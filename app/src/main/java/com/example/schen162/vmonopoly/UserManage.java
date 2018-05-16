@@ -27,9 +27,12 @@ public class UserManage {
     private int UserConins;
     private String HttpResponse;
     private JSONObject jsResponse;
+    private int UserID;
 
     protected UserManage (){
         UserName="";
+        UserID=0;
+        UserConins=0;
     }
 
     public static UserManage getInstance(){
@@ -46,6 +49,7 @@ public class UserManage {
             if(null != jsResponse){
                 UserName=username;
                 UserConins=jsResponse.getInt("coin");
+                UserID=jsResponse.getInt("ID");
                 return true;
             }else{
                 UserName="";
@@ -136,6 +140,13 @@ public class UserManage {
     }
     public String getUser(){
         return UserName;
+    }
+
+    public void setUserID(int id){
+        UserID=id;
+    }
+    public int getUserID(){
+        return UserID;
     }
 
     public void setCoins(int coins){
