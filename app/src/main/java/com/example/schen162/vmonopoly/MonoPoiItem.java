@@ -39,6 +39,15 @@ public class MonoPoiItem {
         }
     }
 
+    public MonoPoiItem(JSONObject jsMonoPOI) {
+        try {
+            mPrice = jsMonoPOI.getInt("poiprice");
+            mDesc = jsMonoPOI.getString("poidesc");
+            mOwner = new MonoUser(jsMonoPOI.getString("poiowner"));
+        }catch (Exception e){
+        }
+    }
+
     public int getPrice(){
         return mPrice;
     }
@@ -52,10 +61,8 @@ public class MonoPoiItem {
         return mOwner;
     }
 
-    public void setPrice(int price){
-        mPrice=price;
-    }
-    public void setDesc(String desc){
-        mDesc=desc;
-    }
+    public void setPrice(int price){mPrice=price;}
+    public void setDesc(String desc){mDesc=desc;}
+    public void setPoi(PoiItem poi){mPoiItem=poi;}
+    public void setOwner(MonoUser owner){mOwner=owner;}
 }

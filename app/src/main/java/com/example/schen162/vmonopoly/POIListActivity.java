@@ -78,8 +78,18 @@ public class POIListActivity extends AppCompatActivity {
                 poiDesc.setText(poi.getDesc());
                 poiOwner.setText("属于 ["+poi.getOwner().getLogin()+"]");
                 poiImage.setImageResource(R.drawable.sold);
+
+                if(poi.getOwner().getLogin() == UserManage.getInstance().getUser()){
+                    poiDesc.setFocusable(true);
+                    poiDesc.setFocusableInTouchMode(true);
+                }else {
+                    poiDesc.setFocusable(false);
+                    poiDesc.setFocusableInTouchMode(false);
+                }
             }catch (Exception e){
                 poiOwner.setText("待售");
+                poiDesc.setFocusable(false);
+                poiDesc.setFocusableInTouchMode(false);
             }
             return view;
         }

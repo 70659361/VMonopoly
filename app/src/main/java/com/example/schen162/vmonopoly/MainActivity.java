@@ -91,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements
             R.drawable.poi_marker_1, R.drawable.poi_marker_2,R.drawable.poi_marker_3,
             R.drawable.poi_marker_4, R.drawable.poi_marker_5,R.drawable.poi_marker_6};
     private ArrayList<PoiItem> mPoiItems;
+    private ArrayList<MonoPoiItem> mMyPoiItems;
+    private int mCurIndex;
 
     private boolean mIsWalking=false;
     private RouteSearch mRouteSearch;
@@ -174,8 +176,9 @@ public class MainActivity extends AppCompatActivity implements
         if(null != item) {
             double lat = item.getLatLonPoint().getLatitude();
             double lon = item.getLatLonPoint().getLongitude();
+            String content= "["+mMyPoiItems.get(mCurIndex).getOwner().getLogin()+"]"+item.getTitle();
             MarkerOptions markerOption = new MarkerOptions()
-                    .position(new LatLng(lat, lon)).title(item.getTitle())
+                    .position(new LatLng(lat, lon)).title(content)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.mypoi));
             aMap.addMarker(markerOption);
         }
@@ -205,6 +208,9 @@ public class MainActivity extends AppCompatActivity implements
             adInfo.setNegativeButton("放弃", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    if(null != poiOverlay) {
+                        poiOverlay.removeFromMap();
+                    }
                 }
             });
             mDialog=adInfo.create();
@@ -261,15 +267,19 @@ public class MainActivity extends AppCompatActivity implements
     public void onMypoiPressed(View view) {
         int userid = UserManage.getInstance().getUserID();
         String jsObj = PoiManage.getInstance().getPOIbyUser(userid);
-        Toast.makeText(getApplicationContext(), jsObj, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(), jsObj, Toast.LENGTH_LONG).show();
 
         try {
             JSONArray jsResp = new JSONArray(jsObj);
+            mMyPoiItems=new ArrayList<MonoPoiItem>();
             for(int i=0; i<jsResp.length();i++) {
                 JSONObject poiObj = jsResp.getJSONObject(i);
+                MonoPoiItem myPoi = new MonoPoiItem(poiObj);
+                mMyPoiItems.add(i, myPoi);
                 String poiid=poiObj.getString("poiid");
                 PoiSearch poiSearch = new PoiSearch(this, null);
                 poiSearch.setOnPoiSearchListener(this);
+                mCurIndex=i;
                 poiSearch.searchPOIIdAsyn(poiid);
             }
         } catch (JSONException e) {
