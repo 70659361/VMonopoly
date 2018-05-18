@@ -127,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements
         txCurCoins.setText("当前福币: " + new Integer(UserManage.getInstance().getCoins()).toString());
         txCurUser.setText("欢迎: "+ usrname);
         txCurLoc.setHint("正在获取当前位置...");
-        txCurMileage.setText("0");
 
         myLocationStyle = new MyLocationStyle();
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);
@@ -503,6 +502,7 @@ public class MainActivity extends AppCompatActivity implements
         timer.cancel();
         int newCoins=UserManage.getInstance().getCoins()+mileage;
         UserManage.getInstance().updateCoins(newCoins);
+        txCurMileage.setText("开始走行");
 
         Toast.makeText(this, "恭喜获得"+new Integer(mileage).toString()+"福币", Toast.LENGTH_SHORT).show();
         txCurCoins.setText(new Integer(newCoins).toString()+"福币");

@@ -21,19 +21,17 @@
         android:id="@+id/txt_curUser"
         android:layout_width="200dp"
         android:layout_height="40dp"
-        android:textSize="30sp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-    />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/txt_curCoins"
         android:layout_width="200dp"
         android:layout_height="40dp"
-        android:textSize="30sp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-    />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/txt_curLocation"
@@ -85,9 +83,9 @@
         android:id="@+id/txt_mileage"
         android:layout_width="80dp"
         android:layout_height="40dp"
-        android:layout_toRightOf="@+id/btn_walk"
         android:layout_alignBottom="@+id/btn_walk"
-        android:text="0"
-        android:textSize="30sp" />
+        android:layout_toRightOf="@+id/btn_walk"
+        android:text="开始走行"
+        android:textSize="18sp" />
 
 </RelativeLayout>
