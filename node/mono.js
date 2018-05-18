@@ -105,7 +105,7 @@ app.post('/coins/:username/:coins', function(req, res){
 	
 	connection.execute(querySQL).catch(err=>{console.log(err);});
 
-	res.send("OKs");
+	res.send("OK");
 
 });
 
@@ -159,6 +159,17 @@ app.post('/buy/:username/:poiid/:price', function(req, res){
 	});	
 		
 	res.send("");
+});
+
+app.post('/desc/:poiid/:desc', function(req, res){
+	var poiid=req.params.poiid;
+	var desc=req.params.desc;
+	
+	querySQL = 'UPDATE poi set poidesc="'+desc+'" WHERE poiid="'+poiid+'"';
+	console.log(querySQL);
+	
+	connection.execute(querySQL).catch(err=>{console.log(err);});
+	res.send("OK");
 });
 
 var server = app.listen(8888, function () {

@@ -5,9 +5,9 @@ package com.example.schen162.vmonopoly;
  */
 
 public class AppConfig {
-    public static String HTTP_HOST = "http://73461be6.ngrok.io";
+    public static String HTTP_HOST = "http://78c0ef7c.ngrok.io";
     public static String SEARCH_CITY = "上海";
-    public static String SEARCH_KEYWORDS = "大楼,酒店";
+    public static String SEARCH_KEYWORDS = "大楼";
 
     public static final String USER_FILE = "user.ini";
     public static final int SEARCH_RADIUS = 300;

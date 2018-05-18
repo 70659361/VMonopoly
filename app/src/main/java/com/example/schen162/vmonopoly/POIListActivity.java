@@ -4,11 +4,14 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,27 +69,64 @@ public class POIListActivity extends AppCompatActivity {
             TextView poiOwner = (TextView) view.findViewById(R.id.txt_PoiOwner);
             Button poiBtn1 = (Button) view.findViewById(R.id.btn_poi1);
             Button poiBtn2 = (Button) view.findViewById(R.id.btn_poi2);
+            final Button poiBtn3 = (Button) view.findViewById(R.id.btn_poi3);
 
             poiBtn1.setTag(R.id.btn_poi1, position);
             poiBtn2.setTag(R.id.btn_poi2, position);
+            poiBtn3.setTag(R.id.btn_poi3, position);
             poiBtn1.setOnClickListener(this);
             poiBtn2.setOnClickListener(this);
-            poiImage.setImageResource(R.drawable.onsale);
+            poiBtn3.setOnClickListener(this);
+            //poiDesc.
+
             poiTitle.setText(poi.getPoi().getTitle());
             poiPrice.setText(new Integer(poi.getPrice()).toString()+"福币");
             try {
-                poiDesc.setText(poi.getDesc());
+                //sold POI
                 poiOwner.setText("属于 ["+poi.getOwner().getLogin()+"]");
                 poiImage.setImageResource(R.drawable.sold);
-
-                if(poi.getOwner().getLogin() == UserManage.getInstance().getUser()){
+                if("null" != poi.getDesc()) {
+                    poiDesc.setText(poi.getDesc());
+                }
+                String ownerUser = poi.getOwner().getLogin();
+                String curUser= UserManage.getInstance().getUser();
+                //own POI
+                if(ownerUser.equals(curUser)){
+                    poiBtn1.setVisibility(View.INVISIBLE);
+                    poiBtn2.setVisibility(View.VISIBLE);
+                    poiBtn3.setVisibility(View.VISIBLE);
                     poiDesc.setFocusable(true);
                     poiDesc.setFocusableInTouchMode(true);
-                }else {
+                    poiDesc.setHint("可为您的地产添加信息");
+                    poiDesc.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                            //TODO:
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            //TODO:
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                            poiBtn3.setTag(R.id.btn_poi3+1, s.toString());
+                        }
+                    });
+                }else {  //Other's POI
+                    poiBtn1.setVisibility(View.INVISIBLE);
+                    poiBtn2.setVisibility(View.INVISIBLE);
+                    poiBtn3.setVisibility(View.INVISIBLE);
                     poiDesc.setFocusable(false);
                     poiDesc.setFocusableInTouchMode(false);
                 }
             }catch (Exception e){
+                //on sale poi
+                poiImage.setImageResource(R.drawable.onsale);
+                poiBtn1.setVisibility(View.VISIBLE);
+                poiBtn2.setVisibility(View.INVISIBLE);
+                poiBtn3.setVisibility(View.INVISIBLE);
                 poiOwner.setText("待售");
                 poiDesc.setFocusable(false);
                 poiDesc.setFocusableInTouchMode(false);
@@ -106,6 +146,12 @@ public class POIListActivity extends AppCompatActivity {
                 case R.id.btn_poi2:
                     int pos2=(int)view.getTag(R.id.btn_poi2);
                     Toast.makeText(getApplicationContext(), "btn2: " + new Integer(pos2).toString(), Toast.LENGTH_SHORT).show();
+                    break;
+
+                case R.id.btn_poi3:
+                    int pos3=(int)view.getTag(R.id.btn_poi3);
+                    String desc=(String)view.getTag(R.id.btn_poi3+1);
+                    updateDescption(pos3, desc);
                     break;
                 default:
                     break;
@@ -128,6 +174,7 @@ public class POIListActivity extends AppCompatActivity {
                     if(true == PoiManage.getInstance().buyPOI(
                             UserManage.getInstance().getUser(), mMonoPOIs.get(pos).getPoi().getPoiId(), inPrice)){
                         Toast.makeText(getApplicationContext(), "购买成功！", Toast.LENGTH_SHORT).show();
+                        showPOIs();
                     }
                 }                // 根据实际情况编写相应代码。
             }
@@ -141,6 +188,15 @@ public class POIListActivity extends AppCompatActivity {
         });
         adInfo.create();
         adInfo.show();
+    }
+
+    private void updateDescption(int pos, String desc){
+       String pid = mPOIs.get(pos).getPoiId();
+       if(PoiManage.getInstance().updatePOIDescription(pid, desc)){
+           Toast.makeText(getApplicationContext(),"更新成功", Toast.LENGTH_SHORT).show();
+       }else{
+           Toast.makeText(getApplicationContext(),"更新失败", Toast.LENGTH_SHORT).show();
+       }
     }
 
     private void showProgressDialog() {

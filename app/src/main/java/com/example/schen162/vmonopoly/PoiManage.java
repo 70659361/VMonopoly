@@ -75,6 +75,16 @@ public class PoiManage {
         return true;
     }
 
+    public boolean updatePOIDescription(String poiid, String poidesc){
+        String api="/desc/"+poiid+"/"+poidesc;
+        try {
+            httpPOSTAPICall(api, "");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     public String getPOIbyUser(int userid){
         httpResponse="";
         try {

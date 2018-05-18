@@ -176,7 +176,9 @@ public class MainActivity extends AppCompatActivity implements
         if(null != item) {
             double lat = item.getLatLonPoint().getLatitude();
             double lon = item.getLatLonPoint().getLongitude();
-            String content= "["+mMyPoiItems.get(mCurIndex).getOwner().getLogin()+"]"+item.getTitle();
+            MonoPoiItem it = mMyPoiItems.get(mCurIndex);
+            String content= "["+it.getOwner().getLogin()+"]"
+                    +item.getTitle()+" \n--"+it.getPrice()+ "福币   \n--" + it.getDesc();
             MarkerOptions markerOption = new MarkerOptions()
                     .position(new LatLng(lat, lon)).title(content)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.mypoi));
