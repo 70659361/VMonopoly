@@ -123,8 +123,9 @@ public class MainActivity extends AppCompatActivity implements
         }
         mDialog = null;
 
+        String usrname=UserManage.getInstance().getUser();
         txCurCoins.setText("当前福币: " + new Integer(UserManage.getInstance().getCoins()).toString());
-        txCurUser.setText("欢迎: "+ UserManage.getInstance().getUser());
+        txCurUser.setText("欢迎: "+ usrname);
         txCurLoc.setHint("正在获取当前位置...");
         txCurMileage.setText("0");
 
