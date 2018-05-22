@@ -431,6 +431,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public boolean onWalkPressed(View view) {
         toggleWalk();
+        StepManager step = new StepManager(getApplicationContext());
+        step.onResume();
         return true;
     }
 

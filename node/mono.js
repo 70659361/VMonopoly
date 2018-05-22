@@ -142,17 +142,15 @@ app.post('/buy/:username/:poiid/:price', function(req, res){
 		if(user != "[]"){
 			uid=user[0]["ID"];
 			console.log(uid);
+		
+			querySQL = 'INSERT INTO poi (poiid, poiowner, poiprice ) VALUES("'+poiid+'",'+uid+', '+price+')';
+			console.log(querySQL);
+			connection.execute(querySQL).catch(err=>{console.log(err);});
 			
-			try{
-				querySQL = 'INSERT INTO poi (poiid, poiowner, poiprice ) VALUES("'+poiid+'",'+uid+', '+price+')';
-				console.log(querySQL);
-				connection.execute(querySQL);
-				
-				querySQL = 'UPDATE usercoins set coins=coins-'+price+' WHERE userid='+uid;
-				console.log(querySQL);
-				connection.execute(querySQL);
-			}catch(e){
-			}
+			querySQL = 'UPDATE users set coin=coin-'+price+' WHERE userid='+uid;
+			console.log(querySQL);
+			connection.execute(querySQL).catch(err=>{console.log(err);});;
+			
 		}
 	}).catch(err=>{
 		console.log(err);
