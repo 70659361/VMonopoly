@@ -88,8 +88,8 @@ public class MainActivity extends AppCompatActivity implements
     private Circle circle;
     private myPoiOverlay poiOverlay;
     private int[] markers = {
-            R.drawable.poi_marker_1, R.drawable.poi_marker_2,R.drawable.poi_marker_3,
-            R.drawable.poi_marker_4, R.drawable.poi_marker_5,R.drawable.poi_marker_6};
+            R.drawable.poi_marker_1,R.drawable.poi_marker_2,R.drawable.poi_marker_3,
+            R.drawable.poi_marker_4,R.drawable.poi_marker_5,R.drawable.poi_marker_6};
     private ArrayList<PoiItem> mPoiItems;
     private ArrayList<MonoPoiItem> mMyPoiItems;
     private int mCurIndex;
